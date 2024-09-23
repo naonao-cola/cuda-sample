@@ -9,7 +9,7 @@ set_runtimes("MT")
 tutorial_list = {
         "01",
         "02",
-        -- "03",
+        "03",
         -- "04",
 }
 
@@ -21,7 +21,7 @@ for _, v in pairs(tutorial_list) do
         add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
-        add_rpathdirs("$(buildir)/windows/x64/releasedbg/")
+        --add_rpathdirs("$(buildir)/windows/x64/releasedbg/")
         for _, filedir in ipairs(os.filedirs(string.format("src/%s/**", v))) do
             --print(filedir)
             local s = filedir
