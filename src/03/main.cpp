@@ -5,6 +5,7 @@ int main ()
 {
     //simpleDeviceQuery();
     //simpleDivergence();
-    nestedHelloWorld();
+    //nestedHelloWorld();
+    nestedReduce2();
     return  0;
 }
