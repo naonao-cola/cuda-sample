@@ -1,7 +1,8 @@
-﻿#include <sys/time.h>
-
-#ifndef _COMMON_H
+﻿#ifndef _COMMON_H
 #define _COMMON_H
+#include <sys/time.h>
+#include <cuda_runtime.h>
+#include <stdio.h>
 
 #define CHECK(call)                                                            \
 {                                                                              \
