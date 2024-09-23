@@ -14,7 +14,7 @@ Device 0: NVIDIA GeForce RTX 4060 Laptop GPU
   Maximum number of threads per block:           1024
   Maximum number of threads per multiprocessor:  1536
   Maximum number of warps per multiprocessor:    48
-  
+
 */
 void simpleDeviceQuery();
 
@@ -40,3 +40,30 @@ mathKernel4: 0.000146s
 
 */
 void simpleDivergence();
+
+
+/**
+一个从GPU启动嵌套内核的简单示例。每个线程在执行开始时显示其信息，并在下一个最低嵌套层完成时进行诊断。
+
+Execution Configuration: grid 1 block 8
+Recursion=0: Hello World from thread 0 block 0
+Recursion=0: Hello World from thread 1 block 0
+Recursion=0: Hello World from thread 2 block 0
+Recursion=0: Hello World from thread 3 block 0
+Recursion=0: Hello World from thread 4 block 0
+Recursion=0: Hello World from thread 5 block 0
+Recursion=0: Hello World from thread 6 block 0
+Recursion=0: Hello World from thread 7 block 0
+-------> nested execution depth: 1
+Recursion=1: Hello World from thread 0 block 0
+Recursion=1: Hello World from thread 1 block 0
+Recursion=1: Hello World from thread 2 block 0
+Recursion=1: Hello World from thread 3 block 0
+-------> nested execution depth: 2
+Recursion=2: Hello World from thread 0 block 0
+Recursion=2: Hello World from thread 1 block 0
+-------> nested execution depth: 3
+Recursion=3: Hello World from thread 0 block 0
+
+*/
+void nestedHelloWorld();

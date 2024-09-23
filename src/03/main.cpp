@@ -3,7 +3,8 @@
 
 int main ()
 {
-    simpleDeviceQuery();
+    //simpleDeviceQuery();
     //simpleDivergence();
+    nestedHelloWorld();
     return  0;
 }
