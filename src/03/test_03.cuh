@@ -93,5 +93,79 @@ void nestedReduce2();
 
 /**
 这段代码实现了交错和邻居配对的方法CUDA的并行缩减。对于本例，使用求和操作。一个各种优化并行约简旨在减少分歧也进行了演示，例如展开。
- */
-void reduceInteger();
+
+xmake run 03 256
+      with array size 16777216  grid 65536 block 256
+recursiveReduce: 0.010651s
+cpu reduce cpu_sum: 2139353471
+reduceNeighbored: 0.032862s
+gpu Neighbored  gpu_sum: 2139353471 <<<grid 65536 block 256>>>
+reduceNeighboredLess: 0.003544s
+gpu Neighbored2 gpu_sum: 2139353471 <<<grid 65536 block 256>>>
+reduceInterleaved: 0.003202s
+gpu Interleaved gpu_sum: 2139353471 <<<grid 65536 block 256>>>
+reduceUnrolling2: 0.001767s
+gpu Unrolling2  gpu_sum: 2139353471 <<<grid 32768 block 256>>>
+reduceUnrolling4: 0.001155s
+gpu Unrolling4  gpu_sum: 2139353471 <<<grid 16384 block 256>>>
+reduceUnrolling8: 0.000831s
+gpu Unrolling8  gpu_sum: 2139353471 <<<grid 8192 block 256>>>
+reduceUnrollWarps8: 0.000951s
+gpu UnrollWarp8 gpu_sum: 2139353471 <<<grid 8192 block 256>>>
+reduceCompleteUnrollWarps8: 0.000864s
+gpu Cmptnroll8  gpu_sum: 2139353471 <<<grid 8192 block 256>>>
+reduceCompleteUnroll: 0.000824s
+gpu Cmptnroll   gpu_sum: 2139353471 <<<grid 8192 block 256>>>
+
+**********
+
+xmake run 03 512
+    with array size 16777216  grid 32768 block 512
+recursiveReduce: 0.010152s
+cpu reduce cpu_sum: 2139353471
+reduceNeighbored: 0.023165s
+gpu Neighbored  gpu_sum: 2139353471 <<<grid 32768 block 512>>>
+reduceNeighboredLess: 0.003586s
+gpu Neighbored2 gpu_sum: 2139353471 <<<grid 32768 block 512>>>
+reduceInterleaved: 0.004122s
+gpu Interleaved gpu_sum: 2139353471 <<<grid 32768 block 512>>>
+reduceUnrolling2: 0.001957s
+gpu Unrolling2  gpu_sum: 2139353471 <<<grid 16384 block 512>>>
+reduceUnrolling4: 0.001248s
+gpu Unrolling4  gpu_sum: 2139353471 <<<grid 8192 block 512>>>
+reduceUnrolling8: 0.000824s
+gpu Unrolling8  gpu_sum: 2139353471 <<<grid 4096 block 512>>>
+reduceUnrollWarps8: 0.000871s
+gpu UnrollWarp8 gpu_sum: 2139353471 <<<grid 4096 block 512>>>
+reduceCompleteUnrollWarps8: 0.001809s
+gpu Cmptnroll8  gpu_sum: 2139353471 <<<grid 4096 block 512>>>
+reduceCompleteUnroll: 0.001710s
+gpu Cmptnroll   gpu_sum: 2139353471 <<<grid 4096 block 512>>>
+
+******
+
+xmake run 03 1024
+with array size 16777216  grid 16384 block 1024
+recursiveReduce: 0.008659s
+cpu reduce cpu_sum: 2139353471
+reduceNeighbored: 0.028250s
+gpu Neighbored  gpu_sum: 2139353471 <<<grid 16384 block 1024>>>
+reduceNeighboredLess: 0.005869s
+gpu Neighbored2 gpu_sum: 2139353471 <<<grid 16384 block 1024>>>
+reduceInterleaved: 0.005356s
+gpu Interleaved gpu_sum: 2139353471 <<<grid 16384 block 1024>>>
+reduceUnrolling2: 0.004216s
+gpu Unrolling2  gpu_sum: 2139353471 <<<grid 8192 block 1024>>>
+reduceUnrolling4: 0.001749s
+gpu Unrolling4  gpu_sum: 2139353471 <<<grid 4096 block 1024>>>
+reduceUnrolling8: 0.001181s
+gpu Unrolling8  gpu_sum: 2139353471 <<<grid 2048 block 1024>>>
+reduceUnrollWarps8: 0.001290s
+gpu UnrollWarp8 gpu_sum: 2139353471 <<<grid 2048 block 1024>>>
+reduceCompleteUnrollWarps8: 0.001190s
+gpu Cmptnroll8  gpu_sum: 2139353471 <<<grid 2048 block 1024>>>
+reduceCompleteUnroll: 0.001278s
+gpu Cmptnroll   gpu_sum: 2139353471 <<<grid 2048 block 1024>>>
+
+*/
+void reduceInteger(int argv1);
