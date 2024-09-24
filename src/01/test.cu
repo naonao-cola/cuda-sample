@@ -11,7 +11,7 @@ __global__ void helloFromGPU()
     printf("Hello World from GPU!\n");
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     printf("Hello World from CPU!\n");
 
@@ -19,5 +19,3 @@ int main(int argc, char **argv)
     CHECK(cudaDeviceReset());
     return 0;
 }
-
-

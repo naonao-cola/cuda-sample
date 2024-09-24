@@ -88,3 +88,10 @@ gpu nested2             elapsed gpu_sum: 1048576 <<<grid 2048 block 512>>>
 
 */
 void nestedReduce2();
+
+
+
+/**
+这段代码实现了交错和邻居配对的方法CUDA的并行缩减。对于本例，使用求和操作。一个各种优化并行约简旨在减少分歧也进行了演示，例如展开。
+ */
+void reduceInteger();

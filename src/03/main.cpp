@@ -1,11 +1,11 @@
 ﻿#include "test_03.cuh"
 
 
-int main ()
+int main()
 {
-    //simpleDeviceQuery();
-    //simpleDivergence();
-    //nestedHelloWorld();
+    // simpleDeviceQuery();
+    // simpleDivergence();
+    // nestedHelloWorld();
     nestedReduce2();
-    return  0;
+    return 0;
 }
