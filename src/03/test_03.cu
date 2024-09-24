@@ -274,6 +274,7 @@ __global__ void gpuRecursiveReduceNosync(int* g_idata, int* g_odata, unsigned in
     }
 }
 
+//*****************   速度最快   ******************/
 __global__ void gpuRecursiveReduce2(int* g_idata, int* g_odata, int iStride, int const iDim)
 {
     // convert global data pointer to the local pointer of this block
@@ -345,18 +346,18 @@ void nestedReduce2()
 
 
     // cpu recursive reduction
-    TICK(cpu_reduce)
+    TICK(cpuRecursiveReduce)
     int cpu_sum = cpuRecursiveReduce(tmp, size);
-    TOCK(cpu_reduce)
+    TOCK(cpuRecursiveReduce)
     printf("cpu reduce\t\telapsed cpu_sum: %d\n", cpu_sum);
 
     // gpu reduceNeighbored
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
-    TICK(gpu_Neighbored)
+    TICK(reduceNeighbored)
     reduceNeighbored<<<grid, block>>>(d_idata, d_odata, size);
     CHECK(cudaDeviceSynchronize());
     CHECK(cudaGetLastError());
-    TOCK(gpu_Neighbored)
+    TOCK(reduceNeighbored)
     CHECK(cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost));
     gpu_sum = 0;
     for (int i = 0; i < grid.x; i++)
@@ -366,11 +367,11 @@ void nestedReduce2()
 
     // gpu nested reduce kernel
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
-    TICK(gpu_nested)
+    TICK(gpuRecursiveReduce)
     gpuRecursiveReduce<<<grid, block>>>(d_idata, d_odata, block.x);
     CHECK(cudaDeviceSynchronize());
     CHECK(cudaGetLastError());
-    TOCK(gpu_nested)
+    TOCK(gpuRecursiveReduce)
     CHECK(cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost));
     gpu_sum = 0;
     for (int i = 0; i < grid.x; i++)
@@ -379,11 +380,11 @@ void nestedReduce2()
 
     // gpu nested reduce kernel without synchronization
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
-    TICK(gpu_nested_without_synchronization)
+    TICK(gpuRecursiveReduceNosync)
     gpuRecursiveReduceNosync<<<grid, block>>>(d_idata, d_odata, block.x);
     CHECK(cudaDeviceSynchronize());
     CHECK(cudaGetLastError());
-    TOCK(gpu_nested_without_synchronization)
+    TOCK(gpuRecursiveReduceNosync)
     CHECK(cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost));
     gpu_sum = 0;
     for (int i = 0; i < grid.x; i++)
@@ -392,11 +393,11 @@ void nestedReduce2()
 
 
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
-    TICK(gpu_nested2)
+    TICK(gpuRecursiveReduce2)
     gpuRecursiveReduce2<<<grid, block.x / 2>>>(d_idata, d_odata, block.x / 2, block.x);
     CHECK(cudaDeviceSynchronize());
     CHECK(cudaGetLastError());
-    TOCK(gpu_nested2)
+    TOCK(gpuRecursiveReduce2)
     CHECK(cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost));
     gpu_sum = 0;
     for (int i = 0; i < grid.x; i++)
@@ -555,6 +556,7 @@ __global__ void reduceUnrolling4(int* g_idata, int* g_odata, unsigned int n)
         g_odata[blockIdx.x] = idata[0];
 }
 
+//*************************速度较快，其他的有几个跟这个差不多，区别在于最后是否有同步于展开，循环里面也有区别       **** */
 __global__ void reduceUnrolling8(int* g_idata, int* g_odata, unsigned int n)
 {
     // set thread ID
@@ -807,7 +809,7 @@ __global__ void reduceUnrollWarps(int* g_idata, int* g_odata, unsigned int n)
         g_odata[blockIdx.x] = idata[0];
 }
 
-void reduceInteger( int argv1)
+void reduceInteger(int argv1)
 {
     // set up device
     // int            dev = 0;
@@ -847,7 +849,7 @@ void reduceInteger( int argv1)
     }
 
     memcpy(tmp, h_idata, bytes);
-    int    gpu_sum = 0;
+    int gpu_sum = 0;
 
     // allocate device memory
     int* d_idata = NULL;
@@ -874,7 +876,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Neighbored  gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x,block.x);
+    printf("gpu Neighbored  gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x, block.x);
 
 
     // kernel 2: reduceNeighbored with less divergence
@@ -890,7 +892,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Neighbored2 gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x,block.x);
+    printf("gpu Neighbored2 gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x, block.x);
 
     // kernel 3: reduceInterleaved
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
@@ -905,7 +907,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Interleaved gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x,block.x);
+    printf("gpu Interleaved gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x, block.x);
 
     // kernel 4: reduceUnrolling2
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
@@ -920,7 +922,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 2; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Unrolling2  gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 2,block.x);
+    printf("gpu Unrolling2  gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 2, block.x);
 
     // kernel 5: reduceUnrolling4
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
@@ -935,7 +937,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 4; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Unrolling4  gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 4,block.x);
+    printf("gpu Unrolling4  gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 4, block.x);
 
     // kernel 6: reduceUnrolling8
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
@@ -950,7 +952,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 8; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Unrolling8  gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 8,block.x);
+    printf("gpu Unrolling8  gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 8, block.x);
 
     for (int i = 0; i < grid.x / 16; i++)
         gpu_sum += h_odata[i];
@@ -968,7 +970,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 8; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu UnrollWarp8 gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 8,block.x);
+    printf("gpu UnrollWarp8 gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 8, block.x);
 
 
     // kernel 9: reduceCompleteUnrollWarsp8
@@ -984,7 +986,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 8; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Cmptnroll8  gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 8,block.x);
+    printf("gpu Cmptnroll8  gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 8, block.x);
 
     // kernel 9: reduceCompleteUnroll
     CHECK(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice));
@@ -1022,7 +1024,7 @@ void reduceInteger( int argv1)
     for (int i = 0; i < grid.x / 8; i++)
         gpu_sum += h_odata[i];
 
-    printf("gpu Cmptnroll   gpu_sum: %d <<<grid %d block %d>>>\n",gpu_sum,grid.x / 8,block.x);
+    printf("gpu Cmptnroll   gpu_sum: %d <<<grid %d block %d>>>\n", gpu_sum, grid.x / 8, block.x);
 
     // free host memory
     free(h_idata);

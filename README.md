@@ -140,15 +140,15 @@ void nestedHelloWorld();
 
 ** 236行有问题
 array 1048576 grid 2048 block 512
-cpu_reduce: 0.000827s
+cpuRecursiveReduce: 0.000540s
 cpu reduce              elapsed cpu_sum: 1048576
-gpu_Neighbored: 0.065077s
+reduceNeighbored: 0.016646s
 gpu Neighbored          elapsed gpu_sum: 1048576 <<<grid 2048 block 512>>>
-gpu_nested: 0.005849s
+gpuRecursiveReduce: 0.006180s
 gpu nested              elapsed gpu_sum: 1048576 <<<grid 2048 block 512>>>
-gpu_nested_without_synchronization: 0.006018s
+gpuRecursiveReduceNosync: 0.005104s
 gpu nestedNosyn         elapsed gpu_sum: 1048576 <<<grid 2048 block 512>>>
-gpu_nested2: 0.001103s
+gpuRecursiveReduce2: 0.000327s
 gpu nested2             elapsed gpu_sum: 1048576 <<<grid 2048 block 512>>>
 
 */
