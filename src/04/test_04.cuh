@@ -188,10 +188,40 @@ void sumArrayZerocpy(int argv1);
 
 
 /**
+cudaMallocManaged 好像要慢一些
+
 这个例子演示了使用CUDA托管内存来实现矩阵加法。在本例中，可以在主机上解引用任意指针和设备。CUDA将自动管理数据的传输
 根据应用程序的需要设置GPU。程序员不需要这样做使用cudaMemcpy, cudaHostGetDevicePointer，或任何其他CUDA API
 显式传输数据。此外，由于CUDA管理的内存不强制驻留在一个地方，它可以被转移到最优内存空间，不需要每次通过PCIe总线往返
 执行跨设备引用(需要零复制和UVA)。
 
+Matrix size: nx 1024 ny 1024
+initialization: 0.046260s
+sumMatrixOnHost: 0.000610s
+sumMatrixGPU: 0.001150s
+sumMatrix on gpu :       <<<(32,32), (32,32)>>>
+
+Matrix size: nx 8192 ny 8192
+initialization: 2.791109s
+sumMatrixOnHost: 0.063782s
+sumMatrixGPU: 0.159918s
+sumMatrix on gpu :       <<<(256,256), (32,32)>>>
+
 */
-void sumMatrixGPUManaged();
+void sumMatrixGPUManaged(int argv1);
+
+
+/**
+这个要比上一个快很多
+
+这个例子演示了使用显式CUDA内存传输来实现矩阵加法。这段代码与sumMatrixGPUManaged形成对比。
+CUDA托管内存用于删除所有显式内存传输，并抽象出物理上独立的地址空间的概念。
+
+Matrix size: nx 4096 ny 4096
+initialData: 0.657863s
+sumMatrixOnHost: 0.033467s
+sumMatrixGPU: 0.001802s
+sumMatrix on gpu :       <<<(128,128), (32,32)>>>
+
+*/
+void sumMatrixGPUManual(int argv1);

@@ -141,7 +141,6 @@ void initialData(float* ip, int size)
     for (int i = 0; i < size; i++) {
         ip[i] = (float)(rand() & 0xFF) / 100.0f;
     }
-
     return;
 }
 
@@ -255,15 +254,13 @@ void readSegment(int argv1)
     CHECK(cudaDeviceReset());
 }
 
-__global__ void readOffsetUnroll2(float *A, float *B, float *C, const int n,
-                                  int offset)
+__global__ void readOffsetUnroll2(float* A, float* B, float* C, const int n, int offset)
 {
     unsigned int i = blockIdx.x * blockDim.x * 2 + threadIdx.x;
     unsigned int k = i + offset;
 
-    if (k + blockDim.x < n)
-    {
-        C[i]            = A[k] + B[k];
+    if (k + blockDim.x < n) {
+        C[i]              = A[k] + B[k];
         C[i + blockDim.x] = A[k + blockDim.x] + B[k + blockDim.x];
     }
 }
@@ -281,7 +278,8 @@ __global__ void readOffsetUnroll4(float* A, float* B, float* C, const int n, int
     }
 }
 
-void readSegmentUnroll(int argv1){
+void readSegmentUnroll(int argv1)
+{
     // set up device
     // int            dev = 0;
     // cudaDeviceProp deviceProp;
@@ -459,7 +457,8 @@ __global__ void warmup(innerStruct* data, innerStruct* result, const int n)
     }
 }
 
-void simpleMathAoS(){
+void simpleMathAoS()
+{
     // set up device
     // int            dev = 0;
     // cudaDeviceProp deviceProp;
@@ -612,7 +611,8 @@ __global__ void warmup2(InnerArray* data, InnerArray* result, const int n)
     }
 }
 
-void simpleMathSoA(){
+void simpleMathSoA()
+{
     // set up device
     // int            dev = 0;
     // cudaDeviceProp deviceProp;
@@ -815,6 +815,193 @@ void sumArrayZerocpy(int argv1)
     CHECK(cudaDeviceReset());
 }
 
-void sumMatrixGPUManaged(){
-    
+void sumMatrixOnHost(float* A, float* B, float* C, const int nx, const int ny)
+{
+    float* ia = A;
+    float* ib = B;
+    float* ic = C;
+    for (int iy = 0; iy < ny; iy++) {
+        for (int ix = 0; ix < nx; ix++) {
+            ic[ix] = ia[ix] + ib[ix];
+        }
+        ia += nx;
+        ib += nx;
+        ic += nx;
+    }
+    return;
+}
+
+// grid 2D block 2D
+__global__ void sumMatrixGPU(float* MatA, float* MatB, float* MatC, int nx, int ny)
+{
+    unsigned int ix  = threadIdx.x + blockIdx.x * blockDim.x;
+    unsigned int iy  = threadIdx.y + blockIdx.y * blockDim.y;
+    unsigned int idx = iy * nx + ix;
+
+    if (ix < nx && iy < ny) {
+        MatC[idx] = MatA[idx] + MatB[idx];
+    }
+}
+
+void sumMatrixGPUManaged(int argv1)
+{
+
+    // set up device
+    // int            dev = 0;
+    // cudaDeviceProp deviceProp;
+    // CHECK(cudaGetDeviceProperties(&deviceProp, dev));
+    // printf("using Device %d: %s\n", dev, deviceProp.name);
+    // CHECK(cudaSetDevice(dev));
+
+    // set up data size of matrix
+    int nx, ny;
+    int ishift = 12;
+
+    if (1)
+        ishift = argv1;
+
+    nx = ny = 1 << ishift;
+
+    int nxy    = nx * ny;
+    int nBytes = nxy * sizeof(float);
+    printf("Matrix size: nx %d ny %d\n", nx, ny);
+
+    // malloc host memory
+    float *A, *B, *hostRef, *gpuRef;
+    CHECK(cudaMallocManaged((void**)&A, nBytes));
+    CHECK(cudaMallocManaged((void**)&B, nBytes));
+    CHECK(cudaMallocManaged((void**)&gpuRef, nBytes););
+    CHECK(cudaMallocManaged((void**)&hostRef, nBytes););
+
+    // initialize data at host side
+    TICK(initialization)
+    initialData(A, nxy);
+    initialData(B, nxy);
+    TOCK(initialization)
+
+    memset(hostRef, 0, nBytes);
+    memset(gpuRef, 0, nBytes);
+
+    // add matrix at host side for result checks
+    TICK(sumMatrixOnHost)
+    sumMatrixOnHost(A, B, hostRef, nx, ny);
+    TOCK(sumMatrixOnHost)
+
+    // invoke kernel at host side
+    int  dimx = 32;
+    int  dimy = 32;
+    dim3 block(dimx, dimy);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
+
+    // warm-up kernel, with unified memory all pages will migrate from host to
+    // device
+    sumMatrixGPU<<<grid, block>>>(A, B, gpuRef, 1, 1);
+
+    // after warm-up, time with unified memory
+    TICK(sumMatrixGPU)
+    sumMatrixGPU<<<grid, block>>>(A, B, gpuRef, nx, ny);
+
+    CHECK(cudaDeviceSynchronize());
+    TOCK(sumMatrixGPU)
+    printf("sumMatrix on gpu :\t <<<(%d,%d), (%d,%d)>>> \n", grid.x, grid.y, block.x, block.y);
+
+    // check kernel error
+    CHECK(cudaGetLastError());
+    checkResult(hostRef, gpuRef, nxy);
+
+    // free device global memory
+    CHECK(cudaFree(A));
+    CHECK(cudaFree(B));
+    CHECK(cudaFree(hostRef));
+    CHECK(cudaFree(gpuRef));
+    CHECK(cudaDeviceReset());
+}
+
+void sumMatrixGPUManual(int argv1)
+{
+    // set up device
+    // int            dev = 0;
+    // cudaDeviceProp deviceProp;
+    // CHECK(cudaGetDeviceProperties(&deviceProp, dev));
+    // printf("using Device %d: %s\n", dev, deviceProp.name);
+    // CHECK(cudaSetDevice(dev));
+
+    // set up data size of matrix
+    int nx, ny;
+    int ishift = 12;
+
+    // if (argc > 1)
+    //     ishift = atoi(argv[1]);
+
+    nx = ny = 1 << ishift;
+
+    int nxy    = nx * ny;
+    int nBytes = nxy * sizeof(float);
+    printf("Matrix size: nx %d ny %d\n", nx, ny);
+
+    // malloc host memory
+    float *h_A, *h_B, *hostRef, *gpuRef;
+    h_A     = (float*)malloc(nBytes);
+    h_B     = (float*)malloc(nBytes);
+    hostRef = (float*)malloc(nBytes);
+    gpuRef  = (float*)malloc(nBytes);
+
+    // initialize data at host side
+    TICK(initialData)
+    initialData(h_A, nxy);
+    initialData(h_B, nxy);
+    TOCK(initialData)
+
+    memset(hostRef, 0, nBytes);
+    memset(gpuRef, 0, nBytes);
+
+    // add matrix at host side for result checks
+    TICK(sumMatrixOnHost)
+    sumMatrixOnHost(h_A, h_B, hostRef, nx, ny);
+    TOCK(sumMatrixOnHost)
+
+
+    // malloc device global memory
+    float *d_MatA, *d_MatB, *d_MatC;
+    CHECK(cudaMalloc((void**)&d_MatA, nBytes));
+    CHECK(cudaMalloc((void**)&d_MatB, nBytes));
+    CHECK(cudaMalloc((void**)&d_MatC, nBytes));
+
+    // invoke kernel at host side
+    int  dimx = 32;
+    int  dimy = 32;
+    dim3 block(dimx, dimy);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
+
+    // init device data to 0.0f, then warm-up kernel to obtain accurate timing
+    // result
+    CHECK(cudaMemset(d_MatA, 0.0f, nBytes));
+    CHECK(cudaMemset(d_MatB, 0.0f, nBytes));
+    sumMatrixGPU<<<grid, block>>>(d_MatA, d_MatB, d_MatC, 1, 1);
+
+
+    // transfer data from host to device
+    CHECK(cudaMemcpy(d_MatA, h_A, nBytes, cudaMemcpyHostToDevice));
+    CHECK(cudaMemcpy(d_MatB, h_B, nBytes, cudaMemcpyHostToDevice));
+
+    TICK(sumMatrixGPU)
+    sumMatrixGPU<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(sumMatrixGPU)
+
+    printf("sumMatrix on gpu :\t <<<(%d,%d), (%d,%d)>>> \n", grid.x, grid.y, block.x, block.y);
+
+    CHECK(cudaMemcpy(gpuRef, d_MatC, nBytes, cudaMemcpyDeviceToHost));
+
+    // check kernel error
+    CHECK(cudaGetLastError());
+    checkResult(hostRef, gpuRef, nxy);
+    CHECK(cudaFree(d_MatA));
+    CHECK(cudaFree(d_MatB));
+    CHECK(cudaFree(d_MatC));
+    free(h_A);
+    free(h_B);
+    free(hostRef);
+    free(gpuRef);
+    CHECK(cudaDeviceReset());
 }

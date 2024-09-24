@@ -10,6 +10,8 @@ int main(int argc, char** argv)
     //readSegmentUnroll(atoi(argv[1]));
     //simpleMathAoS();
     //simpleMathSoA();
-    sumArrayZerocpy(atoi(argv[1]));
+    //sumArrayZerocpy(atoi(argv[1]));
+    //sumMatrixGPUManaged(atoi(argv[1]));
+     sumMatrixGPUManual(0);
     return EXIT_SUCCESS;
 }
