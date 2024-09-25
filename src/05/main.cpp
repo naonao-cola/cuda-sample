@@ -6,6 +6,7 @@ int main (int argc,char** argv){
     //constantStencil();
     //constantReadOnly();
     //reduceInteger();
-    reduceIntegerShfl();
+    //reduceIntegerShfl();
+    simpleShfl();
     return EXIT_SUCCESS;
 }

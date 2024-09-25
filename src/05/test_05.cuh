@@ -164,3 +164,46 @@ reduceShfl: 0.000212s
 reduceShfl          : 2139353471 <<<grid 131072 block 128>>>
 */
 void reduceIntegerShfl();
+
+
+/**
+该文件包括各种洗牌的简单演示指令。
+at Device 0: NVIDIA GeForce RTX 4060 Laptop GPU
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+test_shfl_broadcast: 0.003400s
+shfl bcast              :  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
+test_shfl_wrap: 0.000063s
+shfl wrap right         : 14 15  0  1  2  3  4  5  6  7  8  9 10 11 12 13
+test_shfl_up: 0.000090s
+shfl up                 :  0  1  0  1  2  3  4  5  6  7  8  9 10 11 12 13
+test_shfl_wrap_2: 0.000016s
+shfl wrap left          :  2  3  4  5  6  7  8  9 10 11 12 13 14 15  0  1
+test_shfl_wrap_3: 0.000015s
+shfl wrap 2             :  2  3  4  5  6  7  8  9 10 11 12 13 14 15  0  1
+test_shfl_down: 0.000105s
+shfl down               :  2  3  4  5  6  7  8  9 10 11 12 13 14 15 14 15
+test_shfl_xor: 0.000114s
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+shfl xor 1              :  1  0  3  2  5  4  7  6  9  8 11 10 13 12 15 14
+test_shfl_xor_2: 0.000021s
+shfl xor -1             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+test_shfl_xor_int4: 0.000084s
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+shfl int4 1             :  4  5  6  7  0  1  2  3 12 13 14 15  8  9 10 11
+test_shfl_xor_array: 0.000063s
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+shfl array 1            :  4  5  6  7  0  1  2  3 12 13 14 15  8  9 10 11
+test_shfl_xor_element: 0.000066s
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+shfl idx                :  7  1  2  3  3  5  6  7 15  9 10 11 11 13 14 15
+test_shfl_xor_array_swap_base: 0.000049s
+shfl swap base          :  0  1  2  7  4  5  6  3  8  9 10 15 12 13 14 11
+test_shfl_xor_array_swap: 0.000057s
+shfl swap 0 3           :  0  1  2  3  4  5  6  0  0  9 10 11 12 13 14  0
+test_shfl_swap: 0.000113s
+shfl swap inline        :  7  1  2  3  4  5  6  0  8  9 10 15 12 13 14 11
+test_shfl_array: 0.000058s
+initialData             :  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+shfl array              :  7  1  2  3 11  5  6  7 15  9 10 11  3 13 14 15
+*/
+void simpleShfl();
