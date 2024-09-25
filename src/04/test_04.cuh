@@ -28,7 +28,6 @@ device 0: NVIDIA GeForce RTX 4060 Laptop GPU memory size 4194304 nbyte 16.00MB c
 */
 void pinMemTransfer();
 
-
 /**
 不对齐读取
 
@@ -75,10 +74,8 @@ warmup: 0.009699s
 warmup     <<< 1024, 1024 >>> offset   15
 readOffset: 0.000155s
 readOffset <<< 1024, 1024 >>> offset   15
-
 */
 void readSegment(int argv1);
-
 
 /**
 这个例子演示了读取不对齐对性能的影响强制在浮点数*上发生不对齐的读取。减少下面还包括通过展开的未对齐读取对性能的影响。
@@ -144,7 +141,6 @@ unroll4    <<<  512,  512 >>> offset   15
 
 */
 void readSegmentUnroll(int argv1);
-
 
 /**
 结构体的数组
@@ -225,3 +221,194 @@ sumMatrix on gpu :       <<<(128,128), (32,32)>>>
 
 */
 void sumMatrixGPUManual(int argv1);
+
+
+/**
+不建议偏移
+
+这个例子演示了写不对齐对性能的影响强制在浮点*上发生不对齐的写操作。
+
+ with array size 1048576
+warmup: 0.008561s
+warmup      <<< 2048,  512 >>> offset    0
+writeOffset: 0.000132s
+writeOffset <<< 2048,  512 >>> offset    0
+writeOffsetUnroll2: 0.000194s
+unroll2     <<< 1024,  512 >>> offset    0
+writeOffsetUnroll4: 0.000278s
+unroll4     <<<  512,  512 >>> offset    0
+
+增加偏移量结果不对
+ with array size 1048576
+warmup: 0.008188s
+warmup      <<< 2048,  512 >>> offset    1
+writeOffset: 0.000142s
+writeOffset <<< 2048,  512 >>> offset    1
+different on 1th element: host 2.100000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll2: 0.000246s
+unroll2     <<< 1024,  512 >>> offset    1
+different on 1th element: host 2.100000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll4: 0.000187s
+unroll4     <<<  512,  512 >>> offset    1
+different on 1th element: host 2.100000 gpu 2.060000
+Arrays do not match.
+
+8的偏移也不对
+ with array size 1048576
+warmup: 0.007886s
+warmup      <<< 2048,  512 >>> offset    8
+writeOffset: 0.000308s
+writeOffset <<< 2048,  512 >>> offset    8
+different on 8th element: host 2.480000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll2: 0.000366s
+unroll2     <<< 1024,  512 >>> offset    8
+different on 8th element: host 2.480000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll4: 0.000174s
+unroll4     <<<  512,  512 >>> offset    8
+different on 8th element: host 2.480000 gpu 2.060000
+Arrays do not match.
+
+16的偏移也不对
+ with array size 1048576
+warmup: 0.005550s
+warmup      <<< 2048,  512 >>> offset   16
+writeOffset: 0.000227s
+writeOffset <<< 2048,  512 >>> offset   16
+different on 16th element: host 2.040000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll2: 0.000216s
+unroll2     <<< 1024,  512 >>> offset   16
+different on 16th element: host 2.040000 gpu 2.060000
+Arrays do not match.
+
+writeOffsetUnroll4: 0.000171s
+unroll4     <<<  512,  512 >>> offset   16
+different on 16th element: host 2.040000 gpu 2.060000
+Arrays do not match.
+*/
+void writeSegment(int argv1);
+
+/**
+第五种 访存效率最高
+
+应用于矩阵转置的各种内存访问模式优化内核。转置内核:按列读取，按行写入+展开4块
+
+核为0
+ with matrix nx 2048 ny 2048 with kernel 0
+warmup: 0.007674s
+CopyRow        elapsed 0.000268 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 125.211288 GB
+ with matrix nx 2048 ny 2048 with kernel 0
+warmup: 0.009455s
+CopyRow        elapsed 0.000241 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 139.206223 GB
+ with matrix nx 2048 ny 2048 with kernel 0
+warmup: 0.006636s
+CopyRow        elapsed 0.000198 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 169.563232 GB
+ with matrix nx 2048 ny 2048 with kernel 0
+warmup: 0.009644s
+CopyRow        elapsed 0.000424 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 79.154945 GB
+
+核是1
+ with matrix nx 2048 ny 2048 with kernel 1
+warmup: 0.012380s
+CopyCol        elapsed 0.000349 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 96.132164 GB
+ with matrix nx 2048 ny 2048 with kernel 1
+warmup: 0.009231s
+CopyCol        elapsed 0.000286 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 117.379059 GB
+with matrix nx 2048 ny 2048 with kernel 1
+warmup: 0.008167s
+CopyCol        elapsed 0.000362 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 92.651405 GB
+ with matrix nx 2048 ny 2048 with kernel 1
+warmup: 0.009076s
+CopyCol        elapsed 0.000293 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 114.513824 GB
+
+核是2
+ with matrix nx 2048 ny 2048 with kernel 2
+warmup: 0.008247s
+NaiveRow       elapsed 0.000426 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 78.756287 GB
+with matrix nx 2048 ny 2048 with kernel 2
+warmup: 0.005966s
+NaiveRow       elapsed 0.000442 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 75.910187 GB
+ with matrix nx 2048 ny 2048 with kernel 2
+warmup: 0.009561s
+NaiveRow       elapsed 0.000477 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 70.333580 GB
+
+核是3
+with matrix nx 2048 ny 2048 with kernel 3
+warmup: 0.006614s
+NaiveCol       elapsed 0.000207 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 162.139969 GB
+with matrix nx 2048 ny 2048 with kernel 3
+warmup: 0.008293s
+NaiveCol       elapsed 0.000243 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 138.113342 GB
+ with matrix nx 2048 ny 2048 with kernel 3
+warmup: 0.005356s
+NaiveCol       elapsed 0.000234 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 143.463287 GB
+with matrix nx 2048 ny 2048 with kernel 3
+warmup: 0.008733s
+NaiveCol       elapsed 0.000251 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 133.653839 GB
+
+核是4
+ with matrix nx 2048 ny 2048 with kernel 4
+warmup: 0.006915s
+Unroll4Row     elapsed 0.000297 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 112.951439 GB
+ with matrix nx 2048 ny 2048 with kernel 4
+warmup: 0.005816s
+Unroll4Row     elapsed 0.000305 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 109.951164 GB
+ with matrix nx 2048 ny 2048 with kernel 4
+warmup: 0.005810s
+Unroll4Row     elapsed 0.000287 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 116.988770 GB
+with matrix nx 2048 ny 2048 with kernel 4
+warmup: 0.006243s
+Unroll4Row     elapsed 0.000255 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 131.530365 GB
+
+核是5
+ with matrix nx 2048 ny 2048 with kernel 5
+warmup: 0.006378s
+Unroll4Col     elapsed 0.000134 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 250.422577 GB
+ with matrix nx 2048 ny 2048 with kernel 5
+warmup: 0.006149s
+Unroll4Col     elapsed 0.000150 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 223.748001 GB
+ with matrix nx 2048 ny 2048 with kernel 5
+warmup: 0.008072s
+Unroll4Col     elapsed 0.000181 sec <<< grid (32,128) block (16,16)>>> effective bandwidth 185.424881 GB
+
+核是6
+ with matrix nx 2048 ny 2048 with kernel 6
+warmup: 0.006162s
+DiagonalRow    elapsed 0.000285 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 117.673485 GB
+with matrix nx 2048 ny 2048 with kernel 6
+warmup: 0.006385s
+DiagonalRow    elapsed 0.000286 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 117.281242 GB
+ with matrix nx 2048 ny 2048 with kernel 6
+warmup: 0.008558s
+DiagonalRow    elapsed 0.000528 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 63.538368 GB
+ with matrix nx 2048 ny 2048 with kernel 6
+warmup: 0.005574s
+DiagonalRow    elapsed 0.000275 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 122.062004 GB
+ with matrix nx 2048 ny 2048 with kernel 6
+warmup: 0.006146s
+DiagonalRow    elapsed 0.000443 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 75.746765 GB
+
+核是7
+with matrix nx 2048 ny 2048 with kernel 7
+warmup: 0.011438s
+DiagonalCol    elapsed 0.000301 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 111.431107 GB
+ with matrix nx 2048 ny 2048 with kernel 7
+warmup: 0.006564s
+DiagonalCol    elapsed 0.000250 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 134.163483 GB
+ with matrix nx 2048 ny 2048 with kernel 7
+warmup: 0.008831s
+DiagonalCol    elapsed 0.000302 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 111.079315 GB
+ with matrix nx 2048 ny 2048 with kernel 7
+warmup: 0.006340s
+DiagonalCol    elapsed 0.000363 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 92.408066 GB
+*/
+void transpose(int argv1, int argv2=0, int argv3=0, int argv4=0, int argv5=0);

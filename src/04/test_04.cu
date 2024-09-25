@@ -1005,3 +1005,477 @@ void sumMatrixGPUManual(int argv1)
     free(gpuRef);
     CHECK(cudaDeviceReset());
 }
+
+void checkResult(float* hostRef, float* gpuRef, const int N, const int offset)
+{
+    double epsilon = 1.0E-8;
+    bool   match   = 1;
+
+    for (int i = offset; i < N; i++) {
+        if (abs(hostRef[i] - gpuRef[i]) > epsilon) {
+            match = 0;
+            printf("different on %dth element: host %f gpu %f\n", i, hostRef[i], gpuRef[i]);
+            break;
+        }
+    }
+
+    if (!match)
+        printf("Arrays do not match.\n\n");
+}
+
+__global__ void writeOffset(float* A, float* B, float* C, const int n, int offset)
+{
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int k = i + offset;
+
+    if (k < n)
+        C[k] = A[i] + B[i];
+}
+
+__global__ void writeOffsetUnroll2(float* A, float* B, float* C, const int n, int offset)
+{
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int k = i + offset;
+    if (k + blockDim.x < n) {
+        C[k]              = A[i] + B[i];
+        C[k + blockDim.x] = A[i + blockDim.x] + B[i + blockDim.x];
+    }
+}
+
+__global__ void writeOffsetUnroll4(float* A, float* B, float* C, const int n, int offset)
+{
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int k = i + offset;
+
+    if (k + 3 * blockDim.x < n) {
+        C[k]                  = A[i] + B[i];
+        C[k + blockDim.x]     = A[i + blockDim.x] + B[i + blockDim.x];
+        C[k + 2 * blockDim.x] = A[i + 2 * blockDim.x] + B[i + 2 * blockDim.x];
+        C[k + 3 * blockDim.x] = A[i + 3 * blockDim.x] + B[i + 3 * blockDim.x];
+    }
+}
+
+void writeSegment(int argv1){
+
+    // set up device
+    // int            dev = 0;
+    // cudaDeviceProp deviceProp;
+    // CHECK(cudaGetDeviceProperties(&deviceProp, dev));
+    // printf("%s starting reduction at ", argv[0]);
+    // printf("device %d: %s ", dev, deviceProp.name);
+    // CHECK(cudaSetDevice(dev));
+
+    // set up array size
+    int nElem = 1 << 20;   // total number of elements to reduce
+    printf(" with array size %d\n", nElem);
+    size_t nBytes = nElem * sizeof(float);
+
+    // set up offset for summary
+    int blocksize = 512;
+    int offset    = 0;
+
+    if (1)
+        offset = argv1;
+
+    // if (argc > 2)
+    //     blocksize = atoi(argv[2]);
+
+    // execution configuration
+    dim3 block(blocksize, 1);
+    dim3 grid((nElem + block.x - 1) / block.x, 1);
+
+    // allocate host memory
+    float* h_A     = (float*)malloc(nBytes);
+    float* h_B     = (float*)malloc(nBytes);
+    float* hostRef = (float*)malloc(nBytes);
+    float* gpuRef  = (float*)malloc(nBytes);
+
+    // initialize host array
+    initialData(h_A, nElem);
+    memcpy(h_B, h_A, nBytes);
+
+    // summary at host side
+    sumArraysOnHost(h_A, h_B, hostRef, nElem, offset);
+
+    // allocate device memory
+    float *d_A, *d_B, *d_C;
+    CHECK(cudaMalloc((float**)&d_A, nBytes));
+    CHECK(cudaMalloc((float**)&d_B, nBytes));
+    CHECK(cudaMalloc((float**)&d_C, nBytes));
+
+    // copy data from host to device
+    CHECK(cudaMemcpy(d_A, h_A, nBytes, cudaMemcpyHostToDevice));
+    CHECK(cudaMemcpy(d_B, h_A, nBytes, cudaMemcpyHostToDevice));
+
+    // warmup
+    TICK(warmup)
+    warmup<<<grid, block>>>(d_A, d_B, d_C, nElem, offset);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(warmup)
+    printf("warmup      <<< %4d, %4d >>> offset %4d \n", grid.x, block.x, offset);
+    CHECK(cudaGetLastError());
+
+    // kernel 1:
+    TICK(writeOffset)
+    writeOffset<<<grid, block>>>(d_A, d_B, d_C, nElem, offset);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(writeOffset)
+    printf("writeOffset <<< %4d, %4d >>> offset %4d \n", grid.x, block.x, offset);
+    CHECK(cudaGetLastError());
+
+    // copy kernel result back to host side and check device results
+    CHECK(cudaMemcpy(gpuRef, d_C, nBytes, cudaMemcpyDeviceToHost));
+    checkResult(hostRef, gpuRef, nElem, offset);
+
+    // kernel 2
+    TICK(writeOffsetUnroll2)
+    writeOffsetUnroll2<<<grid.x / 2, block>>>(d_A, d_B, d_C, nElem / 2, offset);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(writeOffsetUnroll2)
+    printf("unroll2     <<< %4d, %4d >>> offset %4d \n", grid.x / 2, block.x, offset);
+    CHECK(cudaGetLastError());
+
+    // copy kernel result back to host side and check device results
+    CHECK(cudaMemcpy(gpuRef, d_C, nBytes, cudaMemcpyDeviceToHost));
+    checkResult(hostRef, gpuRef, nElem, offset);
+
+    // kernel 2
+    TICK(writeOffsetUnroll4)
+    writeOffsetUnroll4<<<grid.x / 4, block>>>(d_A, d_B, d_C, nElem / 2, offset);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(writeOffsetUnroll4)
+    printf("unroll4     <<< %4d, %4d >>> offset %4d \n", grid.x / 4, block.x, offset);
+    CHECK(cudaGetLastError());
+
+    // copy kernel result back to host side and check device results
+    CHECK(cudaMemcpy(gpuRef, d_C, nBytes, cudaMemcpyDeviceToHost));
+    checkResult(hostRef, gpuRef, nElem, offset);
+
+    // free host and device memory
+    CHECK(cudaFree(d_A));
+    CHECK(cudaFree(d_B));
+    CHECK(cudaFree(d_C));
+    free(h_A);
+    free(h_B);
+    CHECK(cudaDeviceReset());
+}
+
+#define BDIMX 16
+#define BDIMY 16
+
+void printData(float* in, const int size)
+{
+    for (int i = 0; i < size; i++) {
+        printf("%dth element: %f\n", i, in[i]);
+    }
+
+    return;
+}
+
+void checkResult_2(float* hostRef, float* gpuRef, const int size, int showme)
+{
+    double epsilon = 1.0E-8;
+    bool   match   = 1;
+
+    for (int i = 0; i < size; i++) {
+        if (abs(hostRef[i] - gpuRef[i]) > epsilon) {
+            match = 0;
+            printf("different on %dth element: host %f gpu %f\n", i, hostRef[i], gpuRef[i]);
+            break;
+        }
+
+        if (showme && i > size / 2 && i < size / 2 + 5) {
+            // printf("%dth element: host %f gpu %f\n",i,hostRef[i],gpuRef[i]);
+        }
+    }
+    if (!match)
+        printf("Arrays do not match.\n\n");
+}
+
+void transposeHost(float* out, float* in, const int nx, const int ny)
+{
+    for (int iy = 0; iy < ny; ++iy) {
+        for (int ix = 0; ix < nx; ++ix) {
+            out[ix * ny + iy] = in[iy * nx + ix];
+        }
+    }
+}
+
+__global__ void warmup(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[iy * nx + ix] = in[iy * nx + ix];
+    }
+}
+
+// case 0 copy kernel: access data in rows
+//访问行数据
+__global__ void copyRow(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[iy * nx + ix] = in[iy * nx + ix];
+    }
+}
+
+// case 1 copy kernel: access data in columns
+//访问列中的数据
+__global__ void copyCol(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[ix * ny + iy] = in[ix * ny + iy];
+    }
+}
+
+// case 2 transpose kernel: read in rows and write in columns
+//按行读，按列写
+__global__ void transposeNaiveRow(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[ix * ny + iy] = in[iy * nx + ix];
+    }
+}
+
+// case 3 transpose kernel: read in columns and write in rows
+//按列读，按行写
+__global__ void transposeNaiveCol(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[iy * nx + ix] = in[ix * ny + iy];
+    }
+}
+
+// case 4 transpose kernel: read in rows and write in columns + unroll 4 blocks
+//按行读取，按列写入+展开4块
+__global__ void transposeUnroll4Row(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x * 4 + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    unsigned int ti = iy * nx + ix;   // access in rows
+    unsigned int to = ix * ny + iy;   // access in columns
+
+    if (ix + 3 * blockDim.x < nx && iy < ny) {
+        out[to]                       = in[ti];
+        out[to + ny * blockDim.x]     = in[ti + blockDim.x];
+        out[to + ny * 2 * blockDim.x] = in[ti + 2 * blockDim.x];
+        out[to + ny * 3 * blockDim.x] = in[ti + 3 * blockDim.x];
+    }
+}
+
+// case 5 transpose kernel: read in columns and write in rows + unroll 4 blocks
+//按列读取，按行写入+展开4块
+__global__ void transposeUnroll4Col(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int ix = blockDim.x * blockIdx.x * 4 + threadIdx.x;
+    unsigned int iy = blockDim.y * blockIdx.y + threadIdx.y;
+
+    unsigned int ti = iy * nx + ix;   // access in rows
+    unsigned int to = ix * ny + iy;   // access in columns
+
+    if (ix + 3 * blockDim.x < nx && iy < ny) {
+        out[ti]                  = in[to];
+        out[ti + blockDim.x]     = in[to + blockDim.x * ny];
+        out[ti + 2 * blockDim.x] = in[to + 2 * blockDim.x * ny];
+        out[ti + 3 * blockDim.x] = in[to + 3 * blockDim.x * ny];
+    }
+}
+
+/*
+ * case 6 :  transpose kernel: read in rows and write in colunms + diagonal coordinate transform
+ */
+//以行读，以列写+对角坐标变换
+__global__ void transposeDiagonalRow(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int blk_y = blockIdx.x;
+    unsigned int blk_x = (blockIdx.x + blockIdx.y) % gridDim.x;
+
+    unsigned int ix = blockDim.x * blk_x + threadIdx.x;
+    unsigned int iy = blockDim.y * blk_y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[ix * ny + iy] = in[iy * nx + ix];
+    }
+}
+
+/*
+ * case 7 :  transpose kernel: read in columns and write in row + diagonal coordinate transform.
+ */
+//转置核:以列读，以行写+对角坐标变换。
+__global__ void transposeDiagonalCol(float* out, float* in, const int nx, const int ny)
+{
+    unsigned int blk_y = blockIdx.x;
+    unsigned int blk_x = (blockIdx.x + blockIdx.y) % gridDim.x;
+
+    unsigned int ix = blockDim.x * blk_x + threadIdx.x;
+    unsigned int iy = blockDim.y * blk_y + threadIdx.y;
+
+    if (ix < nx && iy < ny) {
+        out[iy * nx + ix] = in[ix * ny + iy];
+    }
+}
+
+void transpose(int argv1, int argv2,int argv3,int argv4,int argv5){
+    // set up device
+    // int            dev = 0;
+    // cudaDeviceProp deviceProp;
+    // CHECK(cudaGetDeviceProperties(&deviceProp, dev));
+    // printf("%s starting transpose at ", argv[0]);
+    // printf("device %d: %s ", dev, deviceProp.name);
+    // CHECK(cudaSetDevice(dev));
+
+    // set up array size 2048
+    int nx = 1 << 11;
+    int ny = 1 << 11;
+
+    // select a kernel and block size
+    int iKernel = 0;
+    int blockx  = 16;
+    int blocky  = 16;
+
+    if (argv1 >= 1)
+        iKernel = argv1;
+
+    if (argv2 > 2)
+        blockx = argv2;
+
+    if (argv3 > 3)
+        blocky = argv3;
+
+    if (argv4 > 4)
+        nx = argv4;
+
+    if (argv5 > 5)
+        ny = argv5;
+
+    printf(" with matrix nx %d ny %d with kernel %d\n", nx, ny, iKernel);
+    size_t nBytes = nx * ny * sizeof(float);
+
+    // execution configuration
+    dim3 block(blockx, blocky);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
+
+    // allocate host memory
+    float* h_A     = (float*)malloc(nBytes);
+    float* hostRef = (float*)malloc(nBytes);
+    float* gpuRef  = (float*)malloc(nBytes);
+
+    // initialize host array
+    initialData(h_A, nx * ny);
+
+    // transpose at host side
+    transposeHost(hostRef, h_A, nx, ny);
+
+    // allocate device memory
+    float *d_A, *d_C;
+    CHECK(cudaMalloc((float**)&d_A, nBytes));
+    CHECK(cudaMalloc((float**)&d_C, nBytes));
+
+    // copy data from host to device
+    CHECK(cudaMemcpy(d_A, h_A, nBytes, cudaMemcpyHostToDevice));
+
+    // warmup to avoide startup overhead
+    TICK(warmup)
+    warmup<<<grid, block>>>(d_C, d_A, nx, ny);
+    CHECK(cudaDeviceSynchronize());
+    TOCK(warmup)
+    CHECK(cudaGetLastError());
+
+    // kernel pointer and descriptor
+    void (*kernel)(float*, float*, int, int);
+    char* kernelName;
+
+    // set up kernel
+    switch (iKernel) {
+    case 0:
+        kernel     = &copyRow;
+        kernelName = "CopyRow       ";
+        break;
+
+    case 1:
+        kernel     = &copyCol;
+        kernelName = "CopyCol       ";
+        break;
+
+    case 2:
+        kernel     = &transposeNaiveRow;
+        kernelName = "NaiveRow      ";
+        break;
+
+    case 3:
+        kernel     = &transposeNaiveCol;
+        kernelName = "NaiveCol      ";
+        break;
+
+    case 4:
+        kernel     = &transposeUnroll4Row;
+        kernelName = "Unroll4Row    ";
+        grid.x     = (nx + block.x * 4 - 1) / (block.x * 4);
+        break;
+
+    case 5:
+        kernel     = &transposeUnroll4Col;
+        kernelName = "Unroll4Col    ";
+        grid.x     = (nx + block.x * 4 - 1) / (block.x * 4);
+        break;
+
+    case 6:
+        kernel     = &transposeDiagonalRow;
+        kernelName = "DiagonalRow   ";
+        break;
+
+    case 7:
+        kernel     = &transposeDiagonalCol;
+        kernelName = "DiagonalCol   ";
+        break;
+    }
+
+    // run kernel
+    double iStart = seconds();
+    kernel<<<grid, block>>>(d_C, d_A, nx, ny);
+    CHECK(cudaDeviceSynchronize());
+    double iElaps = seconds() - iStart;
+
+    // calculate effective_bandwidth
+    float ibnd = 2 * nx * ny * sizeof(float) / 1e9 / iElaps;
+    printf("%s elapsed %f sec <<< grid (%d,%d) block (%d,%d)>>> effective "
+           "bandwidth %f GB\n",
+           kernelName,
+           iElaps,
+           grid.x,
+           grid.y,
+           block.x,
+           block.y,
+           ibnd);
+    CHECK(cudaGetLastError());
+
+    // check kernel results
+    if (iKernel > 1) {
+        CHECK(cudaMemcpy(gpuRef, d_C, nBytes, cudaMemcpyDeviceToHost));
+        checkResult_2(hostRef, gpuRef, nx * ny, 1);
+    }
+
+    // free host and device memory
+    CHECK(cudaFree(d_A));
+    CHECK(cudaFree(d_C));
+    free(h_A);
+    free(hostRef);
+    free(gpuRef);
+
+    // reset device
+    CHECK(cudaDeviceReset());
+}

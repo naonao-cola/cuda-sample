@@ -12,6 +12,8 @@ int main(int argc, char** argv)
     //simpleMathSoA();
     //sumArrayZerocpy(atoi(argv[1]));
     //sumMatrixGPUManaged(atoi(argv[1]));
-     sumMatrixGPUManual(0);
+    //sumMatrixGPUManual(0);
+    //writeSegment(atoi(argv[1]));
+    transpose(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
