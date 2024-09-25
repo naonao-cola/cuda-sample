@@ -1,5 +1,5 @@
 ﻿#include "test_05.cuh"
-
+#include "test_0501.cuh"
 int main (int argc,char** argv){
 
     //checkSmemRectangle();
@@ -7,6 +7,7 @@ int main (int argc,char** argv){
     //constantReadOnly();
     //reduceInteger();
     //reduceIntegerShfl();
-    simpleShfl();
+    //simpleShfl();
+    transposeRectangle();
     return EXIT_SUCCESS;
 }
