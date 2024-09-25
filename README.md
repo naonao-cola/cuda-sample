@@ -1,7 +1,6 @@
 # cuda-sample
 
 
-
 ```c++
 //02 文件夹
 #include "../common/common.h"
@@ -350,6 +349,7 @@ void reduceInteger(int argv1);
 ```
 
 ```c++
+//04文件夹
 #include "../common/common.h"
 
 /**
@@ -570,10 +570,8 @@ initialData: 0.657863s
 sumMatrixOnHost: 0.033467s
 sumMatrixGPU: 0.001802s
 sumMatrix on gpu :       <<<(128,128), (32,32)>>>
-
 */
 void sumMatrixGPUManual(int argv1);
-
 
 /**
 不建议偏移
@@ -650,7 +648,6 @@ Arrays do not match.
 void writeSegment(int argv1);
 
 /**
-//04文件夹
 第五种 访存效率最高
 
 应用于矩阵转置的各种内存访问模式优化内核。转置内核:按列读取，按行写入+展开4块
