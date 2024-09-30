@@ -15,6 +15,7 @@ tutorial_list = {
         "05",
         "06",
         "07",
+        "08",
 }
 
 for _, v in pairs(tutorial_list) do
@@ -26,6 +27,9 @@ for _, v in pairs(tutorial_list) do
         --add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
+        if v=="08" then
+            add_links("cublas","curand","cufft","cusparse")
+        end
         for _, filedir in ipairs(os.filedirs(string.format("src/%s/**", v))) do
             --print(filedir)
             local s = filedir
