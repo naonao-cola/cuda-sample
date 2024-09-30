@@ -58,5 +58,83 @@ void simpleHyperqDependence(int argv1 = 4, int argv2 = 2);
 
 /**
 
+这个例子演示了提交工作到CUDA流的深度优先秩序。按深度优先顺序提交工作可能会引入错误依赖在不同CUDA流中不相关的任务之间，限制了并行性
+一个CUDA应用程序。Kernel_1, kernel_2, kernel_3，和kernel_4实现相同的虚拟计算。使用单独的内核可以使这些内核的调度更容易在Visual Profiler中可视化。
+xmake run 06 4  1
+
+CUDA_DEVICE_MAX_CONNECTIONS = 32
+> Using Device 0: NVIDIA GeForce RTX 4060 Laptop GPU with num_streams=4
+> Compute Capability 8.9 hardware with 24 multi-processors
+> grid 8 block 512
+Measured time for parallel execution = 14.678s
 */
-void simpleHyperqDepth();
+void simpleHyperqDepth(int argv1 = 4, int argv2 = 2);
+
+
+/**
+一个使用OpenMP并行创建CUDA工作的例子多个流。本例使用n_streams的OpenMP线程启动4每个流中的内核。注意引入的新pragma， #pragma omp parallel。
+
+CUDA_DEVICE_MAX_CONNECTIONS = 32
+> Using Device 0: NVIDIA GeForce RTX 4060 Laptop GPU with num_streams=4
+> Compute Capability 8.9 hardware with 24 multi-processors
+> grid 8 block 512
+Measured time for parallel execution = 7.677s
+
+*/
+void simpleHyperqOpenmp();
+
+
+/**
+将数据拷贝 数据计算 结果拷贝 分到4个流中，每个流计算一部分
+
+这个例子演示了重叠计算和通信对数据集进行分区并异步启动内存副本和每个子集的核。启动给定的所有传输和内核在同一CUDA流中的子集确保在必要的数据被传输之前不会启动设
+备上的计算。但是，由于每个子集的工作独立于所有其他子集，因此不同子集的通信和计算将重叠。本例以广度优先顺序启动副本和内核。
+
+> Using Device 0: NVIDIA GeForce RTX 4060 Laptop GPU
+> Compute Capability 8.9 hardware with 24 multi-processors
+> CUDA_DEVICE_MAX_CONNECTIONS = 1
+> with streams = 4
+> vector size = 262144
+> grid (2048, 1) block (128, 1)
+
+Measured timings (throughput):
+ Memcpy host to device  : 3.784768 ms (0.277052 GB/s)
+ Memcpy device to host  : 0.246976 ms (4.245659 GB/s)
+ Kernel                 : 1197.521606 ms (0.001751 GB/s)
+ Total                  : 1201.553345 ms (0.001745 GB/s)
+
+Actual results from overlapped data transfers:
+ overlap with 4 streams : 290.024536 ms (0.007231 GB/s)
+ speedup                : 75.862534
+Arrays match.
+
+*/
+void simpleMultiAddBreadth();
+
+
+/**
+广度优先要快一些
+这个例子演示了重叠计算和通信对数据集进行分区并异步启动内存副本和每个子集的核。启动给定的所有传输和内核在同一CUDA流中的子集确保在必要的数
+据被传输之前不会启动设备上的计算。但是，由于每个子集的工作独立于所有其他子集，因此不同子集的通信和计算将重叠。
+这个示例按深度优先顺序启动副本和内核。
+
+> Using Device 0: NVIDIA GeForce RTX 4060 Laptop GPU
+> Compute Capability 8.9 hardware with 24 multi-processors
+> CUDA_DEVICE_MAX_CONNECTIONS = 1
+> with streams = 4
+> vector size = 262144
+> grid (2048, 1) block (128, 1)
+
+Measured timings (throughput):
+ Memcpy host to device  : 1.493152 ms (0.702257 GB/s)
+ Memcpy device to host  : 0.413440 ms (2.536223 GB/s)
+ Kernel                 : 1231.366211 ms (0.001703 GB/s)
+ Total                  : 1233.272827 ms (0.001700 GB/s)
+
+Actual results from overlapped data transfers:
+ overlap with 4 streams : 329.370941 ms (0.006367 GB/s)
+ speedup                : 73.292938
+Arrays match.
+
+*/
+void simpleMultiAddDepth();

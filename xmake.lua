@@ -4,6 +4,7 @@ set_languages("c++17")
 
 
 add_rules("mode.release", "mode.debug", "mode.check","mode.releasedbg")
+add_requires("openmp")
 set_runtimes("MT")
 
 tutorial_list = {
@@ -20,6 +21,7 @@ for _, v in pairs(tutorial_list) do
         set_kind("binary")
         add_rules("cuda")
         add_cugencodes("native")
+        add_packages("openmp")
         --add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
