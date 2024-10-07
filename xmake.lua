@@ -34,6 +34,7 @@ for _, v in pairs(tutorial_list) do
         if v== "09" then
             add_links("cublas","curand")
         end
+        add_culdflags("-gencode arch=compute_89,code=sm_89")
         for _, filedir in ipairs(os.filedirs(string.format("src/%s/**", v))) do
             --print(filedir)
             local s = filedir
