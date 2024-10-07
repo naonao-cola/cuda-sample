@@ -23,4 +23,6 @@ ncu 使用参考，可以不带参数
 
 https://www.cnblogs.com/chenjambo/articles/using-nsight-compute-to-inspect-your-kernels.html#:~:text=Nsight%20C
 ```
+
+
 ![](./images/ncu_1.jpg)
