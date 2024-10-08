@@ -36,9 +36,10 @@ https://zhuanlan.zhihu.com/p/666242337#:~:text=%E7%9B%AE%E5%89%8D%E4%B8%BB%E6%B5
 #这个命令是查看当前的支持的显卡芯片
 ncu --set full -f --list-chips -o 03 ./03
 
-# 性能参考
+# 性能分析 参考
 https://zhuanlan.zhihu.com/p/463144086#:~:text=Nsight%20C
 
+# 图吧工具箱 下载gpu-z 工具
 ```
 
 
