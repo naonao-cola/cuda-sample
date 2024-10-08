@@ -33,8 +33,10 @@ https://zhuanlan.zhihu.com/p/666242337#:~:text=%E7%9B%AE%E5%89%8D%E4%B8%BB%E6%B5
 
 #Profiling is not supported on device 0. To find out supported GPUs refer --list-chips option.
 
-#这个命令是查看当前的支持的显卡芯片
+#这个命令是查看当前的支持的显卡芯片,
 ncu --set full -f --list-chips -o 03 ./03
+# 生成ncu-rep 文件
+ncu --set full -f  -o 03 ./03
 
 # 性能分析 参考
 https://zhuanlan.zhihu.com/p/463144086#:~:text=Nsight%20C
