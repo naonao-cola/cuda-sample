@@ -1,9 +1,9 @@
 ﻿
 #include "test_10.cuh"
 #include <nvtx3/nvToolsExt.h>
-constexpr size_t M = 2;
-constexpr size_t N = 4;
-constexpr size_t K = 3;
+constexpr size_t M = 200;
+constexpr size_t N = 400;
+constexpr size_t K = 300;
 
 void cublass_mm(std::vector<float>& mat_a, std::vector<float>& mat_b)
 {
@@ -206,7 +206,7 @@ void test_graph(){
         cudaGraphLaunch(instance, stream);
         cudaMemcpyAsync(h_out, d_in, size, cudaMemcpyDeviceToHost, stream);
         cudaStreamSynchronize(stream);
-        
+
         cudaEventRecord(stop, 0);
         cudaEventSynchronize(stop);
         float elapsedTime;
