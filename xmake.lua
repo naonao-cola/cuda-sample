@@ -17,6 +17,7 @@ tutorial_list = {
         "07",
         "08",
         "09",
+        "10",
 }
 
 for _, v in pairs(tutorial_list) do
@@ -28,11 +29,11 @@ for _, v in pairs(tutorial_list) do
         --add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
-        if v=="08"  then
+        if v =="08"  or v== "09" or v == "10" then
             add_links("cublas","curand","cufft","cusparse")
         end
-        if v== "09" then
-            add_links("cublas","curand")
+        if  v == "10" then
+            add_links("nvToolsExt")
         end
         add_culdflags("-gencode arch=compute_89,code=sm_89")
         for _, filedir in ipairs(os.filedirs(string.format("src/%s/**", v))) do
