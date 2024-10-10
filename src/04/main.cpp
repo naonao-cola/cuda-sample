@@ -9,11 +9,11 @@ int main(int argc, char** argv)
     //readSegment(atoi(argv[1]));
     //readSegmentUnroll(atoi(argv[1]));
     //simpleMathAoS();
-    //simpleMathSoA();
+    simpleMathSoA();
     //sumArrayZerocpy(atoi(argv[1]));
     //sumMatrixGPUManaged(atoi(argv[1]));
     //sumMatrixGPUManual(0);
     //writeSegment(atoi(argv[1]));
-    transpose(atoi(argv[1]));
+    //transpose(atoi(argv[1]));
     return EXIT_SUCCESS;
 }
