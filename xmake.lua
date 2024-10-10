@@ -18,6 +18,7 @@ tutorial_list = {
         "08",
         "09",
         "10",
+        "11",
 }
 
 for _, v in pairs(tutorial_list) do

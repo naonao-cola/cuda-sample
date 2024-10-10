@@ -196,6 +196,7 @@ void test_graph(){
     cudaGraphInstantiate(&instance, graph, NULL, NULL, 0);
 
     // 执行CUDA图
+    nvtxRangePushA("cuba_graph");
     for (int i = 0; i < 10; ++i) {
         cudaEvent_t start, stop;
         cudaEventCreate(&start);
@@ -215,7 +216,7 @@ void test_graph(){
         cudaEventDestroy(start);
         cudaEventDestroy(stop);
     }
-
+    nvtxRangePop();
     // 清理资源
     cudaGraphDestroy(graph);
     cudaGraphExecDestroy(instance);
