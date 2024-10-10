@@ -112,6 +112,30 @@ ncu ./10
           (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on
           optimizing occupancy.
 ```
+### wsl 安装perf
 
+```bash
+# https://blog.csdn.net/qq_20452055/article/details/108300321
+# https://zhuanlan.zhihu.com/p/600483539
+# https://cloud.tencent.com/developer/article/2228048
 
+sudo apt-get install linux-tools-common
+# WARNING: perf not found for kernel 5.15.153.1-microsoft
+
+#   You may need to install the following packages for this specific kernel:
+#     linux-tools-5.15.153.1-microsoft-standard-WSL2
+#     linux-cloud-tools-5.15.153.1-microsoft-standard-WSL2
+
+#   You may also want to install one of the following packages to keep up to date:
+#     linux-tools-standard-WSL2
+#     linux-cloud-tools-standard-WSL2
+
+# 解决方式 编译wsl kernel
+sudo apt install build-essential flex bison libssl-dev libelf-dev
+git clone https://gitee.com/mirrors/WSL2-Linux-Kernel.git
+cd WSL2-Linux-Kernel/tools/perf
+make -j8
+sudo cp perf /usr/local/bin
+# 编译成功后，即可在此文件夹下找到perf工具，执行成功，也可以自行将perf工具移动到/usr/bin文件夹下方便调用
+```
 ![](./images/ncu_1.jpg)

@@ -20,6 +20,7 @@ from pycuda.reduction import ReductionKernel
 InteractiveShell.ast_node_interactivity = "all"
 
 
+# https://blog.csdn.net/dzpmfd/article/details/137679110
 def query_device():
     print(f'The version of PyCUDA: {pycuda.VERSION}')
     print(f'The version of Python: {sys.version}')
@@ -277,6 +278,7 @@ mod = SourceModule("""
         c[idx] = a[idx] + b[idx];
     }
 """)
+
 
 def test():
     # 获取核函数
