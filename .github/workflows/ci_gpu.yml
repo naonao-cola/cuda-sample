@@ -88,4 +88,3 @@ jobs:
         run: |
           xmake clean -a
           xmake --yes -vD
-          xmake run -a
