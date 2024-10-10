@@ -171,4 +171,8 @@ sudo perf timechart
 # 查看特定函数的情况
 sudo perf annotate -f main
 ```
+
+####  目前来看 workflows只支持编译cuda代码，不支持运行cuda代码，运行时报错。没有cuda设备。
+
+
 ![](./images/ncu_1.jpg)
