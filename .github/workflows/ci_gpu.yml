@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         arch: [x86_64]
-        mode: [release, releasedbg]
+        mode: [release]
 
     runs-on: ${{ matrix.os }}
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
@@ -42,7 +42,7 @@ jobs:
         with:
           cuda: '12.3.0'
           method: 'network'
-          sub-packages: '["nvcc", "cudart", "cublas", "cublas_dev", "thrust", "visual_studio_integration","curand","cufft","cusparse"]'
+          sub-packages: '["nvcc", "cublas","curand","cufft","cusparse"]'
 
       - name: Check NVCC
         run: nvcc -V
