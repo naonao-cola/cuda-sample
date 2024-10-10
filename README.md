@@ -136,6 +136,39 @@ git clone https://gitee.com/mirrors/WSL2-Linux-Kernel.git
 cd WSL2-Linux-Kernel/tools/perf
 make -j8
 sudo cp perf /usr/local/bin
+# 编译的时候，makefile 提示缺少库，只是少一些检测特性。不用在意
 # 编译成功后，即可在此文件夹下找到perf工具，执行成功，也可以自行将perf工具移动到/usr/bin文件夹下方便调用
+
+
+# perf_event_paranoid setting is 2:
+#   -1: Allow use of (almost) all events by all users
+#       Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
+# >= 0: Disallow raw and ftrace function tracepoint access
+# >= 1: Disallow CPU event access
+# >= 2: Disallow kernel profiling
+# To make the adjusted perf_event_paranoid setting permanent preserve it
+# in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)
+
+# 修改 /etc/sysctl.conf 文件，并使之生效
+sudo /sbin/sysctl -p
+
+# https://zhuanlan.zhihu.com/p/686247554
+# https://www.cnblogs.com/conscience-remain/p/16142279.html
+# https://blog.csdn.net/youzhangjing_/article/details/124671286
+
+#生成记录
+perf record -F 99 -a -g ./11
+#查看图标  或者直接查看函数调用占比 perf report -i perf.data
+perf report --call-graph none
+perf stat -e cache-misses ./11
+perf stat -e cpu-clock ./11
+# 只查看 11的程序
+perf report --call-graph none -c 11
+# 生成带svg的图片record
+sudo perf timechart record ./11
+# 转化为svg
+sudo perf timechart
+# 查看特定函数的情况
+sudo perf annotate -f main
 ```
 ![](./images/ncu_1.jpg)
