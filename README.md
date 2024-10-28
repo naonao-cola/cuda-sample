@@ -16,6 +16,10 @@
 
 [第十章](./doc/10.md)
 
+
+### 其他参考
+https://github.com/Tony-Tan/CUDA_Freshman.git
+
 ```bash
 # ncu  为所有用户启用访问权限
 

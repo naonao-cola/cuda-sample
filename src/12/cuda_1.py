@@ -19,8 +19,10 @@ from pycuda.reduction import ReductionKernel
 
 InteractiveShell.ast_node_interactivity = "all"
 
-
+# https://github.com/YouQixiaowu/CUDA-Programming-with-Python
 # https://blog.csdn.net/dzpmfd/article/details/137679110
+
+
 def query_device():
     print(f'The version of PyCUDA: {pycuda.VERSION}')
     print(f'The version of Python: {sys.version}')

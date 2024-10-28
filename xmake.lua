@@ -19,6 +19,7 @@ tutorial_list = {
         "09",
         "10",
         "11",
+        "13",
 }
 
 for _, v in pairs(tutorial_list) do
@@ -30,6 +31,7 @@ for _, v in pairs(tutorial_list) do
         --add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
+        add_includedirs("cutlass/include/")
         if v =="08"  or v== "09" or v == "10" then
             add_links("cublas","curand","cufft","cusparse")
         end
