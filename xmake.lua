@@ -5,6 +5,7 @@ set_languages("c++17")
 
 add_rules("mode.release", "mode.debug", "mode.check","mode.releasedbg")
 add_requires("openmp")
+add_requires("cutlass")
 set_runtimes("MT")
 
 tutorial_list = {
@@ -20,6 +21,7 @@ tutorial_list = {
         "10",
         "11",
         "13",
+        "14",
 }
 
 for _, v in pairs(tutorial_list) do
@@ -28,10 +30,11 @@ for _, v in pairs(tutorial_list) do
         add_rules("cuda")
         add_cugencodes("native")
         add_packages("openmp")
-        --add_cuflags("-allow-unsupported-compiler")
+        add_packages("cutlass")
+        add_cuflags("-allow-unsupported-compiler")
         set_group("test")
         add_headerfiles("src/common/common.h")
-        add_includedirs("cutlass/include/")
+        add_includedirs("3rdparty")
         if v =="08"  or v== "09" or v == "10" then
             add_links("cublas","curand","cufft","cusparse")
         end

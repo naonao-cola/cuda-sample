@@ -1,0 +1,57 @@
+﻿#include "../common/common.h"
+#include "cutlass/cutlass.h"
+#include "cutlass/gemm/device/gemm.h"
+#include <iostream>
+#include <sstream>
+#include <vector>
+
+///////////////////////////////////////////////////////////////
+//
+// 模板文件的问题，main.cpp 要改成cu
+//
+int test_cutlass_01();
+
+
+#include "cutlass/aligned_buffer.h"
+#include "cutlass/gemm/gemm.h"
+#include "cutlass/layout/matrix.h"
+#include "cutlass/matrix_shape.h"
+#include "cutlass/numeric_types.h"
+
+#include "cutlass/core_io.h"
+#include "cutlass/util/host_tensor.h"
+#include "cutlass/util/tensor_view_io.h"
+
+#include "cutlass/util/reference/host/gemm.h"
+#include "cutlass/util/reference/host/tensor_compare.h"
+#include "cutlass/util/reference/host/tensor_fill.h"
+
+#include "cutlass/transform/pitch_linear_thread_map.h"
+#include "cutlass/transform/threadblock/predicated_tile_iterator.h"
+#include "cutlass/transform/threadblock/regular_tile_iterator_tensor_op.h"
+
+#include "cutlass/util/debug.h"
+#include "cutlass/util/device_dump.h"
+
+int test_dump_reg_shmem();
+
+
+// CUTLASS includes
+#include "cutlass/layout/pitch_linear.h"
+#include "cutlass/transform/pitch_linear_thread_map.h"
+#include "cutlass/transform/threadblock/predicated_tile_iterator.h"
+//
+//  CUTLASS utility includes
+//
+// Defines operator<<() to write TensorView objects to std::ostream
+#include "cutlass/util/tensor_view_io.h"
+
+// Defines cutlass::HostTensor<>
+#include "cutlass/util/host_tensor.h"
+
+// Defines cutlass::reference::host::TensorFill() and
+// cutlass::reference::host::TensorFillBlockSequential()
+#include "cutlass/util/reference/host/tensor_fill.h"
+#pragma warning(disable : 4503)
+
+int test_tile_iterator();
