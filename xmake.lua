@@ -35,6 +35,12 @@ for _, v in pairs(tutorial_list) do
         set_group("test")
         add_headerfiles("src/common/common.h")
         add_includedirs("3rdparty")
+        if is_mode("debug") then
+            --add_defines("DEBUG")
+            --set_symbols("debug")
+            --set_optimize("none")
+            add_cuflags("-g -G")
+        end
         if v =="08"  or v== "09" or v == "10" then
             add_links("cublas","curand","cufft","cusparse")
         end

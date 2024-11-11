@@ -411,7 +411,6 @@ __global__ void copy(typename Iterator::Params dst_params, typename Iterator::El
                      cutlass::Coord<2> extent)
 {
 
-
     Iterator dst_iterator(dst_params, dst_pointer, extent, threadIdx.x);
     Iterator src_iterator(src_params, src_pointer, extent, threadIdx.x);
 
