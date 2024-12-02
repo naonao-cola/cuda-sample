@@ -1,0 +1,92 @@
+appdirs @ file:///home/conda/feedstock_root/build_artifacts/appdirs_1603108395799/work
+asttokens==2.4.1
+autocommand==2.2.2
+backports.tarfile==1.2.0
+Bottleneck @ file:///croot/bottleneck_1707864210935/work
+Brotli @ file:///home/conda/feedstock_root/build_artifacts/brotli-split_1725267488082/work
+certifi @ file:///croot/certifi_1725551672989/work/certifi
+cffi @ file:///home/conda/feedstock_root/build_artifacts/cffi_1725560520483/work
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1698833585322/work
+contourpy @ file:///croot/contourpy_1700583582875/work
+cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
+decorator==5.1.1
+exceptiongroup==1.2.2
+executing==2.1.0
+filelock @ file:///home/conda/feedstock_root/build_artifacts/filelock_1725740553553/work
+fonttools @ file:///croot/fonttools_1713551344105/work
+fsspec==2024.9.0
+h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1634280454336/work
+hpack==4.0.0
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1619110129307/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1724450538981/work
+importlib_metadata @ file:///home/conda/feedstock_root/build_artifacts/importlib-metadata_1726082825846/work
+importlib_resources==6.4.0
+inflect==7.3.1
+ipython==8.27.0
+jaraco.context==5.3.0
+jaraco.functools==4.0.1
+jaraco.text==3.12.1
+jedi==0.19.1
+Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1715127149914/work
+kiwisolver @ file:///croot/kiwisolver_1672387140495/work
+Mako @ file:///home/conda/feedstock_root/build_artifacts/mako_1715711344987/work
+MarkupSafe @ file:///home/conda/feedstock_root/build_artifacts/markupsafe_1724959461586/work
+matplotlib==3.9.2
+matplotlib-inline==0.1.7
+mkl-service==2.4.0
+more-itertools==10.3.0
+mpmath @ file:///home/conda/feedstock_root/build_artifacts/mpmath_1678228039184/work
+networkx @ file:///home/conda/feedstock_root/build_artifacts/networkx_1712540363324/work
+numexpr @ file:///croot/numexpr_1696515281613/work
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1707225380409/work/dist/numpy-1.26.4-cp310-cp310-linux_x86_64.whl#sha256=51131fd8fc130cd168aecaf1bc0ea85f92e8ffebf211772ceb16ac2e7f10d7ca
+onnx==1.16.2
+ordered-set==4.1.0
+packaging @ file:///croot/packaging_1720101850331/work
+pandas @ file:///croot/pandas_1718308974269/work/dist/pandas-2.2.2-cp310-cp310-linux_x86_64.whl#sha256=a2434a313a5eb5b4fdbec6c770abfde859f643eff7b3a703791bf8b73e54c394
+parso==0.8.4
+pexpect==4.9.0
+pillow @ file:///croot/pillow_1721059439630/work
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1725821724470/work
+ply==3.11
+ppq==0.6.6
+prompt_toolkit==3.0.47
+protobuf==3.20.2
+ptyprocess==0.7.0
+pure_eval==0.2.3
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1711811537435/work
+pycuda @ file:///home/conda/feedstock_root/build_artifacts/pycuda_1723933663506/work
+Pygments==2.18.0
+pyparsing @ file:///croot/pyparsing_1725041624202/work
+PyQt5==5.15.10
+PyQt5-sip @ file:///croot/pyqt-split_1698769088074/work/pyqt_sip
+PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1661604839144/work
+python-dateutil @ file:///croot/python-dateutil_1716495738603/work
+pytools @ file:///home/conda/feedstock_root/build_artifacts/pytools_1725633725292/work
+pytz @ file:///croot/pytz_1713974312559/work
+PyYAML @ file:///home/conda/feedstock_root/build_artifacts/pyyaml_1725456145900/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1717057054362/work
+sip @ file:///croot/sip_1698675935381/work
+siphash24 @ file:///home/conda/feedstock_root/build_artifacts/siphash24_1720489150435/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+stack-data==0.6.3
+sympy @ file:///home/conda/feedstock_root/build_artifacts/sympy_1723500263401/work
+tensorrt @ file:///home/naonao/download/TensorRT-10.0.0.6/python/tensorrt-10.0.0b6-cp310-none-linux_x86_64.whl#sha256=b4e259b6c9dbfda6f8c81b8c23fc92b201e601e5c818a3bb8dc8a23a6b606bba
+tensorrt_dispatch @ file:///home/naonao/download/TensorRT-10.0.0.6/python/tensorrt_dispatch-10.0.0b6-cp310-none-linux_x86_64.whl#sha256=67a15c0a1acc7a81e2a5a455eae7951babad0afa5dce80b6ca573f8c677afbfb
+tensorrt_lean @ file:///home/naonao/download/TensorRT-10.0.0.6/python/tensorrt_lean-10.0.0b6-cp310-none-linux_x86_64.whl#sha256=563fcf998e2efe0947ec94940206e74ccab8488873d1f56c1dc481cb29df0b03
+tomli @ file:///opt/conda/conda-bld/tomli_1657175507142/work
+torch==2.4.1
+torch2trt==0.5.0
+torchaudio==2.4.1
+torchvision==0.19.1
+tornado @ file:///croot/tornado_1718740109488/work
+tqdm==4.66.5
+traitlets==5.14.3
+triton==3.0.0
+typeguard==4.3.0
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1717802530399/work
+tzdata @ file:///croot/python-tzdata_1690578112552/work
+unicodedata2 @ file:///croot/unicodedata2_1713212950228/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1719391292974/work
+wcwidth==0.2.13
+zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1726248574750/work
+zstandard==0.22.0
