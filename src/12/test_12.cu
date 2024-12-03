@@ -114,7 +114,7 @@ void test_cg_01()
     printf("\n...Done.\n\n");
 }
 
-
+#if __CUDA_ARCH__ >= 700
 template<bool writeSquareRoot>
 __device__ void reduceBlockData(cuda::barrier<cuda::thread_scope_block>& barrier, cg::thread_block_tile<32>& tile32, double& threadSum, double* result)
 {
@@ -149,6 +149,7 @@ __device__ void reduceBlockData(cuda::barrier<cuda::thread_scope_block>& barrier
         }
     }
 }
+#endif
 
 __global__ void normVecByDotProductAWBarrier(float* vecA, float* vecB, double* partialResults, int size)
 {
