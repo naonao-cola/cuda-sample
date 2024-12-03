@@ -6,6 +6,8 @@ on:
     paths:
       - 'src/**'
       - '.github/workflows/**'
+      - 'xmake.lua'
+      - 'README.md'
 
 jobs:
   build:
