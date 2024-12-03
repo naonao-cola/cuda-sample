@@ -16,6 +16,14 @@
 
 [第十章](./doc/10.md)
 
+[十一章](./doc/11.md) push_back emplace_back 对比
+
+[十二章](./doc/12.md)
+
+十三章，加密的代码，可以不看
+
+[十四章](./doc/14.md)
+
 
 ### 其他参考
 https://github.com/Tony-Tan/CUDA_Freshman.git
