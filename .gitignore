@@ -34,5 +34,7 @@ vsxmake2022/
 *.out
 *.app
 
+*.gz
+
 .vscode/
 build/

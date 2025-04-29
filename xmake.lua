@@ -59,3 +59,5 @@ for _, v in pairs(tutorial_list) do
             end
         end
 end
+
+includes("gpu_mode/**/xmake.lua")
