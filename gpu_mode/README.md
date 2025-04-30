@@ -37,3 +37,18 @@ libtorch组成讲解之ATen、c10、at、csrc
 %timeit -r 5 -n 400 nums2=[i+5 for i in nums1]
 
 %%time 与 %time ， %%timeit 与 %timeit 的计算方式相同，区别在于 % 是用于单行代码的命令，%% 是应用于当前单元的命令
+
+
+## cuda
+
+https://blog.csdn.net/fb_help/article/details/80375858
+
+C/C++程序可通过调用.ptx的信息来运行核函数，完成cuda功能，但.ptx不会显式生成，通过编译时向编译器nvcc输入-ptx（生成ptx文件） 或 -keep（生成全部编译中间文件） 可生成.ptx文件1。
+
+
+.ptx文件在编译阶段控制kernel内资源的生成或调用，所以，我们可以通过.ptx或--ptxas-options=-v命令获得kernel在编译阶段获得资源的情况。下面讲kernel在编译时能确定什么。而--ptxas-options=-v命令就可以看到所有确定的资源。从而可以确定块在SM上的分配。
+
+
+--ptxas-options=-v命令的作用是查看kernel在编译阶段确定的所有静态资源，有：寄存器资源，local memory（stack 内资源），共享内存资源，和常量资源和global memory资源。
+
+
