@@ -120,7 +120,7 @@ __device__ void reduceBlockData(cuda::barrier<cuda::thread_scope_block>& barrier
 {
     extern __shared__ double tmp[];
 
-#pragma unroll
+#    pragma unroll
     for (int offset = tile32.size() / 2; offset > 0; offset /= 2) {
         threadSum += tile32.shfl_down(threadSum, offset);
     }
@@ -136,7 +136,7 @@ __device__ void reduceBlockData(cuda::barrier<cuda::thread_scope_block>& barrier
     if (tile32.meta_group_rank() == 0) {
         double beta = tile32.thread_rank() < tile32.meta_group_size() ? tmp[tile32.thread_rank()] : 0.0;
 
-#pragma unroll
+#    pragma unroll
         for (int offset = tile32.size() / 2; offset > 0; offset /= 2) {
             beta += tile32.shfl_down(beta, offset);
         }
@@ -279,20 +279,20 @@ int runNormVecByDotProductAWBarrier(int argc, char** argv, int deviceId)
 
 void test_cg_02()
 {
-    //printf("%s starting...\n", argv[0]);
+    // printf("%s starting...\n", argv[0]);
 
     // This will pick the best possible CUDA capable device
-    //int dev = findCudaDevice(argc, (const char**)argv);
-    int argc=1;
+    // int dev = findCudaDevice(argc, (const char**)argv);
+    int   argc   = 1;
     char* argv[] = {"test_cg_02"};
-    int dev=0;
-    int major = 0;
+    int   dev    = 0;
+    int   major  = 0;
     CHECK(cudaDeviceGetAttribute(&major, cudaDevAttrComputeCapabilityMajor, dev));
 
     // Arrive-Wait Barrier require a GPU of Volta (SM7X) architecture or higher.
     if (major < 7) {
         printf("simpleAWBarrier requires SM 7.0 or higher.  Exiting...\n");
-        //exit(EXIT_WAIVED);
+        // exit(EXIT_WAIVED);
         return;
     }
 
@@ -303,7 +303,7 @@ void test_cg_02()
         printf("\nSelected GPU (%d) does not support Cooperative Kernel Launch, "
                "Waiving the run\n",
                dev);
-        //exit(EXIT_WAIVED);
+        // exit(EXIT_WAIVED);
         return;
     }
 

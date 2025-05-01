@@ -69,6 +69,6 @@ void cufft();
  *这是一个演示使用cuSPARSE库来执行对随机生成的数据进行稀疏矩阵向量乘法。
 真要针对稀疏矩阵，编译失败，未定义的函数。暂时先不管
  */
- #include <cusparse.h>
+#include <cusparse.h>
 #include <cusparse_v2.h>
 void cusparse();

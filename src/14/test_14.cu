@@ -361,7 +361,8 @@ __global__ void kernel_dump(typename GmemIterator::Params params, typename GmemI
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-int test_dump_reg_shmem(){
+int test_dump_reg_shmem()
+{
     // Initialize a 64x32 column major matrix with sequential data (1,2,3...).
     using Element = cutlass::half_t;
     using Layout  = cutlass::layout::ColumnMajor;
@@ -528,7 +529,8 @@ cudaError_t TestTileIterator(int M, int K)
     return cudaSuccess;
 }
 
-int test_tile_iterator(){
+int test_tile_iterator()
+{
     cudaError_t result = TestTileIterator(57, 35);
     if (result == cudaSuccess) {
         std::cout << "Passed." << std::endl;

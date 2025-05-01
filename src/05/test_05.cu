@@ -1650,10 +1650,9 @@ __global__ void test_shfl_xor_plus(int* d_out, int* d_in, int const mask)
     d_out[threadIdx.x] = value;
 }
 
-void printData(int *in, const int size)
+void printData(int* in, const int size)
 {
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < size; i++) {
         printf("%2d ", in[i]);
     }
 

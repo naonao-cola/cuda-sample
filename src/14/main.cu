@@ -1,9 +1,10 @@
 ﻿#include "test_14.cuh"
 
-int main (){
+int main()
+{
 
-    //test_cutlass_01();
-    //test_dump_reg_shmem();
+    // test_cutlass_01();
+    // test_dump_reg_shmem();
     test_tile_iterator();
-     return 0;
+    return 0;
 }

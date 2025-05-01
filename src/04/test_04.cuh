@@ -411,4 +411,4 @@ DiagonalCol    elapsed 0.000302 sec <<< grid (128,128) block (16,16)>>> effectiv
 warmup: 0.006340s
 DiagonalCol    elapsed 0.000363 sec <<< grid (128,128) block (16,16)>>> effective bandwidth 92.408066 GB
 */
-void transpose(int argv1, int argv2=0, int argv3=0, int argv4=0, int argv5=0);
+void transpose(int argv1, int argv2 = 0, int argv3 = 0, int argv4 = 0, int argv5 = 0);

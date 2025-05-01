@@ -1055,7 +1055,8 @@ __global__ void writeOffsetUnroll4(float* A, float* B, float* C, const int n, in
     }
 }
 
-void writeSegment(int argv1){
+void writeSegment(int argv1)
+{
 
     // set up device
     // int            dev = 0;
@@ -1329,7 +1330,8 @@ __global__ void transposeDiagonalCol(float* out, float* in, const int nx, const 
     }
 }
 
-void transpose(int argv1, int argv2,int argv3,int argv4,int argv5){
+void transpose(int argv1, int argv2, int argv3, int argv4, int argv5)
+{
     // set up device
     // int            dev = 0;
     // cudaDeviceProp deviceProp;

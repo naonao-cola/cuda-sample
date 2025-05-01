@@ -2,6 +2,9 @@
 from torch.utils.cpp_extension import load_inline
 import os
 
+import sys
+sys.path.append(".")
+
 # 确保 build_directory 存在
 # build_directory = './tmp'
 # os.makedirs(build_directory, exist_ok=True)

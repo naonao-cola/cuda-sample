@@ -673,7 +673,8 @@ float testCublasError(const int M, const int N, const int K)
     return max_error;
 }
 
-float testCublasPerformance(const int M, const int N, const int K, const int repeat){
+float testCublasPerformance(const int M, const int N, const int K, const int repeat)
+{
     size_t size_a = M * K * sizeof(float);
     size_t size_b = K * N * sizeof(float);
     size_t size_c = M * N * sizeof(float);
@@ -710,7 +711,8 @@ float testCublasPerformance(const int M, const int N, const int K, const int rep
     return sec;
 }
 
-void test_cublass(){
+void test_cublass()
+{
     printf("\nKernal = cublas\n");
     const int outer_repeat = 10, inner_repeat = 1;
     {
@@ -743,5 +745,4 @@ void test_cublass(){
 
         printf("M N K = %6d %6d %6d, Time = %12.8lf %12.8lf %12.8lf s, AVG Performance = %10.4lf Gflops\n", M, N, K, min_sec, avg_sec, max_sec, avg_Gflops);
     }
-   
 }

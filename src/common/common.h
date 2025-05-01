@@ -1,4 +1,4 @@
-﻿#ifndef _COMMON_H
+#ifndef _COMMON_H
 #define _COMMON_H
 #include <cuda_runtime.h>
 #include <stdio.h>

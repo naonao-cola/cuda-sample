@@ -1,11 +1,12 @@
-﻿#include "test_08.cuh"
+#include "test_08.cuh"
 
-int main(){
+int main()
+{
 
-    //cublas();
-    //cuda_openacc();
-    //cufft_multi();
-    //cufft();
+    // cublas();
+    // cuda_openacc();
+    // cufft_multi();
+    // cufft();
     cusparse();
-    return  EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

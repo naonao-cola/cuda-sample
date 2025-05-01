@@ -1,4 +1,4 @@
-﻿```c++
+```c++
 #include "../common/common.h"
 #include <cuda_runtime.h>
 #include <stdio.h>

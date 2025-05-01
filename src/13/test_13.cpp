@@ -1,4 +1,4 @@
-﻿#include "test_13.h"
+#include "test_13.h"
 
 
 /*
@@ -317,16 +317,16 @@ void cleanup(encryptChunk* textList, encryptChunk* cryptList, int* key, int16_t*
 void test_encrypt()
 {
     //模拟输入
-    int argc=5;
-    char **argv= new char*[5];
+    int    argc = 5;
+    char** argv = new char*[5];
     for (int i = 0; i < 5; ++i) {
         argv[i] = new char[100];
     }
     //赋值
-    argv[1]="encrypt";
-    argv[2]="/home/naonao/cxx/cuda-sample/src/encrypt/txt.txt";
-    argv[3]="/home/naonao/cxx/cuda-sample/src/encrypt/txt_1.txt";
-    argv[4]="/home/naonao/cxx/cuda-sample/src/encrypt/txt_2.txt";
+    argv[1] = "encrypt";
+    argv[2] = "/home/naonao/cxx/cuda-sample/src/encrypt/txt.txt";
+    argv[3] = "/home/naonao/cxx/cuda-sample/src/encrypt/txt_1.txt";
+    argv[4] = "/home/naonao/cxx/cuda-sample/src/encrypt/txt_2.txt";
 
 
 
@@ -342,7 +342,7 @@ void test_encrypt()
 
     if (argc != 5) {
         printf("usage: %s <encrypt|decrypt> <file.in> <file.out> <key.file>\n", argv[0]);
-        return ;
+        return;
     }
 
     // Are we encrypting or decrypting?
@@ -357,7 +357,7 @@ void test_encrypt()
                 "The action specified ('%s') is not valid. Must be "
                 "either 'encrypt' or 'decrypt'\n",
                 argv[1]);
-        return ;
+        return;
     }
 
     // Input file
@@ -365,7 +365,7 @@ void test_encrypt()
 
     if (in == NULL) {
         fprintf(stderr, "Unable to open %s for reading\n", argv[2]);
-        return ;
+        return;
     }
 
     // Output file
@@ -373,7 +373,7 @@ void test_encrypt()
 
     if (out == NULL) {
         fprintf(stderr, "Unable to open %s for writing\n", argv[3]);
-       return ;
+        return;
     }
 
     // Key file
@@ -381,26 +381,25 @@ void test_encrypt()
 
     if (keyfile == NULL) {
         fprintf(stderr, "Unable to open key file %s for reading\n", argv[4]);
-        return ;
+        return;
     }
 
     keyFileLength = getFileLength(keyfile);
 
     if (keyFileLength != sizeof(*userkey) * USERKEY_LENGTH) {
         fprintf(stderr, "Invalid user key file length %lu, must be %lu\n", keyFileLength, sizeof(*userkey) * USERKEY_LENGTH);
-        return ;
+        return;
     }
 
     userkey = (int16_t*)malloc(sizeof(int16_t) * USERKEY_LENGTH);
 
     if (userkey == NULL) {
         fprintf(stderr, "Error allocating user key\n");
-
     }
 
     if (fread(userkey, sizeof(*userkey), USERKEY_LENGTH, keyfile) != USERKEY_LENGTH) {
         fprintf(stderr, "Error reading user key\n");
-        return ;
+        return;
     }
 
     if (a == ENCRYPT) {
@@ -418,7 +417,7 @@ void test_encrypt()
                 "divisible by %d\n",
                 textLen,
                 CHUNK_SIZE);
-        return ;
+        return;
     }
 
     readInputData(in, textLen, &textHead, &textTail, &cryptHead, &cryptTail);
@@ -431,7 +430,7 @@ void test_encrypt()
     while (curr != NULL) {
         if (fwrite(curr->data, sizeof(signed char), CHUNK_SIZE, out) != CHUNK_SIZE) {
             fprintf(stderr, "Failed writing crypt to %s\n", argv[3]);
-           return ;
+            return;
         }
 
         curr = curr->next;

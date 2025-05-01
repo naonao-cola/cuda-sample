@@ -16,7 +16,7 @@ rule compile
 rule link
   command = $cxx $in $ldflags -o $out
 
-build main.o: compile /home/naonao/demo/rep/cuda-sample/gpu_mode/001/tmp/main.cpp
+build main.o: compile /home/test001/proj/nao/repo/cuda-sample/gpu_mode/001/tmp/main.cpp
 
 
 

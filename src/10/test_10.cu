@@ -161,7 +161,8 @@ __global__ void kernel2(float* out, const float* in, int numElements)
     }
 }
 
-void test_graph(){
+void test_graph()
+{
 
     const int    numElements = 1024;
     const size_t size        = numElements * sizeof(float);
@@ -211,7 +212,7 @@ void test_graph(){
         cudaEventRecord(stop, 0);
         cudaEventSynchronize(stop);
         float elapsedTime;
-        cudaEventElapsedTime( &elapsedTime,start, stop );
+        cudaEventElapsedTime(&elapsedTime, start, stop);
         printf("Time to generate:  %3.1f ms\n", elapsedTime);
         cudaEventDestroy(start);
         cudaEventDestroy(stop);
