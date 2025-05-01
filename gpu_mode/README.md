@@ -10,6 +10,8 @@ https://github.com/gpu-mode/lectures
 
 打开 环境变量 TORCH_COMPILE_DEBUG   可以看到torch.complie 生成的triton 代码
 
+调试编译后的代码 使用 depyf包
+
 查看生成的代码
 
 Cheat: Generate a triton kernel

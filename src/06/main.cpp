@@ -1,4 +1,4 @@
-#include "test_06.cuh"
+﻿#include "test_06.cuh"
 
 
 int main(int argc, char** argv)

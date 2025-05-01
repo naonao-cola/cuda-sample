@@ -1,4 +1,4 @@
-set_project("CUDA-SAMPLE")
+﻿set_project("CUDA-SAMPLE")
 set_version("1.1.0")
 set_languages("c++17")
 

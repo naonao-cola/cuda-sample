@@ -1,4 +1,4 @@
-﻿root = true
+root = true
 
 [*.c,*.cpp, *.h, *.hpp,*inl]
 indent_style = tab  # 缩进风格

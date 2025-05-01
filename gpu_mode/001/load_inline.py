@@ -1,4 +1,4 @@
-﻿# Look at this test for inspiration
+# Look at this test for inspiration
 # https://github.com/pytorch/pytorch/blob/main/test/test_cpp_extensions_jit.py
 
 import torch

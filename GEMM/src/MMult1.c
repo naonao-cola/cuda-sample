@@ -1,4 +1,4 @@
-﻿/* Create macros so that the matrices are stored in column-major order */
+/* Create macros so that the matrices are stored in column-major order */
 
 #define A(i, j) a[(j)*lda + (i)]
 #define B(i, j) b[(j)*ldb + (i)]

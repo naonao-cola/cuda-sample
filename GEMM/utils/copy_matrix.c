@@ -1,4 +1,4 @@
-﻿#define A(i, j) a[(j)*lda + (i)]
+#define A(i, j) a[(j)*lda + (i)]
 #define B(i, j) b[(j)*ldb + (i)]
 
 void copy_matrix(int m, int n, double* a, int lda, double* b, int ldb)

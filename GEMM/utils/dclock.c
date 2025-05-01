@@ -1,4 +1,4 @@
-﻿#include <sys/time.h>
+#include <sys/time.h>
 #include <time.h>
 
 static double gtod_ref_time_sec = 0.0;

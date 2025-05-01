@@ -1,4 +1,4 @@
-﻿#include "test_01.cuh"
+#include "test_01.cuh"
 
 
 int main()

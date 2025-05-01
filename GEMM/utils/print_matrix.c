@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 
 #define A(i, j) a[(j)*lda + (i)]
 

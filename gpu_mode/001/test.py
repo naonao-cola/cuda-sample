@@ -1,4 +1,4 @@
-﻿import torch
+import torch
 from dotenv import load_dotenv
 import os
 

@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import torch
 from torchvision.io import read_image, write_png
 from torch.utils.cpp_extension import load_inline

@@ -1,4 +1,4 @@
-# Prerequisites
+﻿# Prerequisites
 *.d
 
 # Compiled Object files
@@ -13,6 +13,7 @@
 vsxmake2022/
 .vscode/
 .xmake/
+**/__pycache__
 
 # Compiled Dynamic libraries
 *.so
