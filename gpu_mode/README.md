@@ -102,3 +102,8 @@ nvcc -dryrun vector_addition.cu
 #$ g++ -D__CUDA_ARCH_LIST__=520 -D__NV_LEGACY_LAUNCH -m64 -Wl,--start-group "/tmp/tmpxft_0000e17d_00000000-13_a_dlink.o" "/tmp/tmpxft_0000e17d_00000000-11_vector_addition.o"   "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"  -lcudadevrt  -lcudart_static  -lrt -lpthread  -ldl  -Wl,--end-group -o "a.out"
 
 ```
+
+
+## numba cuda 与 thread
+
+第五节里面的 栅栏 与多线程   numba namedtuple 需要看一下
