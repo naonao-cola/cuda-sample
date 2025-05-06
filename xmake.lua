@@ -62,5 +62,6 @@ end
 
 includes(
     "gpu_mode/**/xmake.lua",
-    "GEMM/xmake.lua"
+    "GEMM/xmake.lua",
+    "perf/xmake.lua"
     )
