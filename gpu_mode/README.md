@@ -16,7 +16,7 @@ https://github.com/gpu-mode/lectures
 
 Cheat: Generate a triton kernel
 
-在命令行使用一下命令，可以查看生成的代码
+在命令行使用一下命令，可以查看生成的代码,需要增加环境变量
 `TORCH_LOGS="output_code" python compile_square.py`
 
 python文件的代码
@@ -61,6 +61,7 @@ https://blog.csdn.net/fb_help/article/details/80375858
 NVCC的dryrun选项可以在控制台上列出所有的编译子命令而不进行真实的编译
 
 ```bash
+## xmake 暂时没找到支持ptx 的指令，添加了要报错
 ## 生成 ptx  指令
 nvcc -O3 -ptx vector_addition.cu
 # 更详细的信息
@@ -107,3 +108,9 @@ nvcc -dryrun vector_addition.cu
 ## numba cuda 与 thread
 
 第五节里面的 栅栏 与多线程   numba namedtuple 需要看一下
+
+
+
+## 条件分支
+
+第8接的 divergence.cu
