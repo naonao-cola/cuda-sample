@@ -1,7 +1,9 @@
 ﻿
 
 cutlass_mode_list = {
-        "00_basic_gemm"
+        "00_basic_gemm",
+        "01_cutlass_utilities",
+        "02_dump_reg_shmem"
 
 }
 
