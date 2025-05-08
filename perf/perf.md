@@ -112,3 +112,128 @@ perf script -i perf.data | stackcollapse-perf.pl | flamegraph.pl > perf.svg
 
 # 火焰图可以在谷歌浏览器中直接打开，放大缩小，vscode 中不支持放大缩小
 ```
+
+
+
+
+## uftrace
+
+https://github.com/namhyung/uftrace
+
+```bash
+## https://www.bigcatblog.com/uftrace/
+
+## apt 安装， github 有源码安装 需要make install
+sudo apt update
+sudo apt install uftrace
+
+## 增加编译选项 add_cxflags("-pg")
+# 在控制台直接查看
+uftrace perf_001
+
+# 先记录5次在查看
+uftrace record perf_001  5
+uftrace replay
+
+# 不记录 直接查看
+uftrace live perf_001  5
+
+# 不想看到 library function 的紀錄， new delete
+uftrace --no-libcall perf_001  5
+
+# 如果想看巢狀的 library function 紀錄
+uftrace --nest-libcall perf_001  5
+
+# 加上參數 -k 或是 --kernel 來记录 kernel的调用
+uftrace -k perf_001  5
+# 如果在紀錄中有出現 event 的紀錄，像是下面 linux:sched-out ，可以加上 --no-event 來取消顯示
+
+
+
+
+
+
+
+
+
+# 指定层数
+uftrace --depth 3 perf_001  5
+uftrace -D 3 perf_001  5
+# 只追蹤該 function 和其下的 children functions
+uftrace -F allocate2 perf_001  5
+uftrace --filter allocate2 perf_001  5
+
+# 不追蹤該 function 和其下的 children functions
+uftrace -N allocate1 test 3
+uftrace --notrace allocate1 test 3
+
+# 只追蹤呼叫該 function 的來源
+uftrace -C allocate1 test 3
+uftrace --caller-filter allocate1 test 3
+
+# 只不追蹤該 function
+uftrace -H allocate2 test 3
+uftrace --hide allocate2 test 3
+
+# 過濾花費時間低於設定的閥值的 function
+uftrace -t 1us test 3
+uftrace --time-filter 1us test 3
+
+
+
+
+
+
+
+
+# 紀錄 function 傳進去的參數和回傳值
+uftrace -A atoi@arg1 test 3
+uftrace --argument atoi@arg1 test 3
+# 我們可以設定變數型態，來幫助我們更好地了解數據
+uftrace -A atoi@arg1/s test 3
+uftrace --argument atoi@arg1/s test 3
+
+#顯示 atoi 的回傳為 3，atoi() = 3
+uftrace -R atoi@retval test 3
+uftrace --retval atoi@retval test 3
+
+# 可以自動記錄參數和回傳值
+uftrace -a test 3
+uftrace --auto-args test 3
+
+
+# uftrace report
+# Total time：包含自身以及 child functions 所花費的時間
+# Self time：只包含自身 function 所花費的時間
+# 我們也可以加上參數 -s 來選擇排列順序
+# uftrace report -s self
+# 預設為 total
+# total：依照整個 function 所花費的全部時間由多到少排列
+# self：依照自身 function 所花費的時間由多到少排列
+# call：依照呼叫次數由多到少排列
+Total time   Self time       Calls  Function
+==========  ==========  ==========  ====================
+54.400 us    1.400 us           1  main
+31.900 us    1.000 us           1  allocate1
+30.200 us   30.200 us           4  operator new[]
+21.100 us   21.100 us           1  atoi
+ 1.100 us    0.700 us           3  allocate2
+
+
+Total time   Self time       Calls  Function
+  ==========  ==========  ==========  ====================
+   41.441 ms   40.793 ms           1  <556cb550d1db>
+  489.444 us  489.444 us          25  operator delete
+   77.954 us   77.954 us           4  std::__ostream_insert
+   58.916 us   58.916 us           1  std::ios_base::Init::Init
+   47.301 us   47.301 us          25  operator new
+   23.202 us   23.202 us           2  std::basic_ostream::_M_insert
+    6.684 us    6.684 us           1  linux:schedule
+    3.476 us    3.476 us           4  std::chrono::_V2::system_clock::now
+   59.957 us    0.852 us           1  <556cb550d4a4>
+    0.189 us    0.189 us           1  __cxa_atexit
+
+# 看程式的 call graph 也可以了解到程式裡的 function 之間的關係
+uftrace record test 3
+uftrace graph
+```

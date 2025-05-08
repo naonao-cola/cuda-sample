@@ -20,6 +20,8 @@ for _, v in pairs(perf_list) do
     target(perf_target)
         set_kind("binary")
         add_rules("rule_display")
+        add_cxflags("-pg")
+        -- add_cxflags("-pg")
         for _, filedir in ipairs(os.filedirs(string.format("%s/**", v))) do
             --print(filedir)
             local s = filedir
