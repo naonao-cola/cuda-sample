@@ -63,5 +63,7 @@ end
 includes(
     "gpu_mode/**/xmake.lua",
     "GEMM/xmake.lua",
-    "perf/xmake.lua"
+    "perf/xmake.lua",
+    "cutlass_mode/**/xmake.lua",
+    "cutlass_mode/xmake.lua"
     )

@@ -198,3 +198,11 @@ cutlass 仓库将util 目录复制过来了
 另外的一个perf 仓库
 
 https://github.com/namhyung/uftrace
+
+
+``` bash
+# 获取GPU 计算能力
+nvidia-smi --query-gpu=compute_cap --format=csv
+nvidia-smi -q | grep "CUDA Version" -A 5
+
+```
