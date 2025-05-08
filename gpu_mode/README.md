@@ -17,7 +17,11 @@ https://github.com/gpu-mode/lectures
 Cheat: Generate a triton kernel
 
 在命令行使用一下命令，可以查看生成的代码,需要增加环境变量
+
 `TORCH_LOGS="output_code" python compile_square.py`
+
+
+`TORCH_LOGS="inductor" python compile_square.py`
 
 python文件的代码
 ```python
