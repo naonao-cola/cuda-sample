@@ -113,7 +113,7 @@ nvcc -dryrun vector_addition.cu
 
 第五节里面的 栅栏 与多线程   numba namedtuple 需要看一下
 
-
+设置环境变量 NUMBA_ENABLE_CUDASIM 可以进行调试，进入模拟器，模拟在GPU上运行，实际在cpu端运行， 可以核函数打断点。
 
 ## 条件分支
 
