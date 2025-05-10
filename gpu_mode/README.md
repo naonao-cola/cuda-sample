@@ -1,6 +1,15 @@
 
-[toc]
 
+
+- [第五讲](#第五讲)
+  - [numba cuda 与 thread](#numba-cuda-与-thread)
+- [第八讲](#第八讲)
+  - [合并访问](#合并访问)
+  - [条件分支](#条件分支)
+  - [线程粗化](#线程粗化)
+  - [变量私有化](#变量私有化)
+  - [最优block gird](#最优block-gird)
+  - [分块](#分块)
 
 ## torch profile
 
@@ -118,6 +127,9 @@ nvcc -dryrun vector_addition.cu
 
 # 第八讲
 
+## 合并访问
+coalesce
+
 ## 条件分支
 
 第8接的 divergence.cu
@@ -126,8 +138,15 @@ nvcc -dryrun vector_addition.cu
 
 ncu --set full  benchmark
 
-线程粗化，速度提升 30 倍
+## 线程粗化
+coarsening.cu 线程粗化，速度提升 30 倍
 
-变量私有化
+## 变量私有化
 
+privatization2.cu
+
+## 最优block gird
 第8 讲的 occupancy.cu  的 cudaOccupancyMaxPotentialBlockSize  计算最合适 block大小
+
+## 分块
+tiling.cu
