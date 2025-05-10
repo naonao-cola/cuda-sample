@@ -130,3 +130,29 @@ target("cutlass_mode_cute_tiled_copy")
     --add_headerfiles("./example_utils.hpp")
     add_files("tiled_copy.cu")
 target_end()
+
+
+target("cutlass_mode_cute_other_test")
+    set_kind("binary")
+    add_rules("cuda")
+    add_cugencodes("native")
+    add_packages("openmp")
+    add_packages("cutlass")
+    add_cuflags("-allow-unsupported-compiler")
+    add_cuflags("-rdc=true")
+    add_cuflags("--expt-relaxed-constexpr",{public = true})
+    add_cuflags("--extended-lambda",{public = true})
+    add_cuflags("--ptxas-options=-v",{fource = true})
+    set_group("cute_mode")
+    add_cuflags(
+        "-c",
+        "-lineinfo",
+        "--source-in-ptx",
+        {fource = true})
+    add_includedirs("../../3rdparty")
+    if is_mode("debug") then
+        add_cuflags("-g -G")
+    end
+    --add_headerfiles("./example_utils.hpp")
+    add_files("other/test.cu")
+target_end()
