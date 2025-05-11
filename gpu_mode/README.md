@@ -10,6 +10,8 @@
   - [变量私有化](#变量私有化)
   - [最优block gird](#最优block-gird)
   - [分块](#分块)
+- [第九讲 归约](#第九讲-归约)
+- [第十讲](#第十讲)
 
 ## torch profile
 
@@ -150,3 +152,22 @@ privatization2.cu
 
 ## 分块
 tiling.cu
+
+
+# 第九讲 归约
+
+torch_reductions.py   python 归约
+
+nondeterminism.py    浮点数左右相加 结果不同
+
+simple_reduce.cu    简单归约，线程分歧很高
+
+control_divergence_reduce.cu  归约
+
+shared_reduce.cu     共享内存 归约
+
+segment_reduce.cu    分块归约
+
+# 第十讲
+
+cudaMemcpyPeerAsync   不同 gpu之间复制
