@@ -116,7 +116,7 @@ __global__ static __launch_bounds__(decltype(size(CThreadLayout{}))::value) void
     // Clear the accumulators
     clear(tCrC);
 
-#if 0
+#if 1
   if(thread0()) {
     print("  mA : "); print(  mA); print("\n");
     print("  gA : "); print(  gA); print("\n");
@@ -126,7 +126,7 @@ __global__ static __launch_bounds__(decltype(size(CThreadLayout{}))::value) void
   }
 #endif
 
-#if 0
+#if 1
   if(thread0()) {
     print("  mB : "); print(  mB); print("\n");
     print("  gB : "); print(  gB); print("\n");
@@ -136,7 +136,7 @@ __global__ static __launch_bounds__(decltype(size(CThreadLayout{}))::value) void
   }
 #endif
 
-#if 0
+#if 1
   if(thread0()) {
     print("  mC : "); print(  mC); print("\n");
     print("  gC : "); print(  gC); print("\n");

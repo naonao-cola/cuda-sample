@@ -25,7 +25,18 @@ https://zhuanlan.zhihu.com/p/26869575907
 1. CuTe, shape 形状计算解析 [cnblog](https://www.cnblogs.com/Edwardlyz/articles/18368114)
 2. cute 子块的切割 [zhihu](https://zhuanlan.zhihu.com/p/28356098779)
 3. CuTe Layout Algebra 解析 [zhihu](https://zhuanlan.zhihu.com/p/22300321859)
+4. CUDA 编程使用 Tensor core 详解 [zhihu](https://zhuanlan.zhihu.com/p/706494789)
 
+5. 自底向上理解cute  [zhihu](https://zhuanlan.zhihu.com/p/8225904566)
+6. cutlass源码导读（3）——核心软件抽象  [zhihu](https://zhuanlan.zhihu.com/p/595533802)
+7. CUDA使用Tensor Core执行GEMM代码讲解——入门向 [zhihu](https://zhuanlan.zhihu.com/p/1888052343708308119)
+8. 为什么加pad可以解bank conflict？ [zhihu](https://zhuanlan.zhihu.com/p/603016056)
+9.  OpenAI-Triton学习仓库推荐 [zhihu](https://zhuanlan.zhihu.com/p/29006314571)
+10. reed佬的  CUDA高性能编程 [zhihu](https://www.zhihu.com/column/c_1696937812497235968)
+11. cute 之 Copy抽象 [zhihu](https://zhuanlan.zhihu.com/p/666232173)
+12. 只推荐一个cuda c++项目 你会推荐哪一个？ [zhihu](https://www.zhihu.com/question/665380720/answer/92099035426)
+13. CUTLASS CuTe实战(一)-基础 [zhihu](https://zhuanlan.zhihu.com/p/690703999)
+14. CUDA shared memory避免bank conflict的swizzling机制解析 [zhihu](https://zhuanlan.zhihu.com/p/4746910252)
 
 
 提供了 `cute::print`  打印
@@ -290,3 +301,6 @@ A / B
 没看懂 Logical product。 blocked_product 比较好理解
 
 product 的几种形式 [csdn](https://blog.csdn.net/qq_33146555/article/details/130658810)
+
+
+
