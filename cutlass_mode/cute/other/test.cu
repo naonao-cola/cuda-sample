@@ -139,8 +139,44 @@ void test_002()
     std::cout << "\r\n composition-3 \r\n";
     cute::print(composition_ret_3);
 }
+
+void test_03()
+{
+    using namespace cute;
+    auto layout = Layout<Shape<_4, _2, _3>, Stride<_2, _1, _8>>{};
+    cute::print(layout);
+    std::cout << "\r\n logical_divide \r\n";
+    auto tiler = Layout(Shape<_4>{}, Stride<_2>{});
+    auto result = logical_divide(layout, tiler);
+    cute::print_layout(result);
+
+    auto layout2 = make_layout(make_shape(9, make_shape(4, 8)), make_stride(59, make_stride(13, 1)));
+    //cute::print_layout(layout2);
+    std::cout << "\r\n logical_divide_2 \r\n";
+    auto tiler_2 = make_tile(Layout(Shape<_3>{}, Stride<_3>{}),
+                             Layout(Shape<_2,_4>{}, Stride<_1,_8>{}));
+    auto result_2   = logical_divide(layout2, tiler_2);
+    cute::print_layout(result_2);
+}
+
+
+void test_04()
+{
+    using namespace cute;
+    Layout tile = Layout<Shape<_2, _2>, Stride<_1, _2>>{};
+    cute::print_layout(tile);
+    Layout matrix_of_tiles = Layout<Shape<_3, _4>, Stride<_4, _1>>{};
+    cute::print_layout(matrix_of_tiles);
+    std::cout << "\r\n blocked_product \r\n";
+    print_layout(blocked_product(tile, matrix_of_tiles));
+    std::cout << "\r\n logical_product \r\n";
+    print_layout(logical_product(tile, matrix_of_tiles));
+
+}
 int main(int argc, char** argv)
 {
-    //test_001();
-    test_002();
+    // test_001();
+    // test_002();
+    //test_03();
+    test_04();
 }
