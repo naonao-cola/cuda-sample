@@ -16,11 +16,25 @@
 ## torch profile
 
 github
+
 https://github.com/gpu-mode/lectures
+
 b站
+
 https://www.bilibili.com/video/BV1QZ421N7pT/?vd_source=1d8a232b177c2a5e28ac445019114cec
+
 youtube
+
 https://www.youtube.com/@GPUMODE/videos
+
+
+nsight compute
+
+https://www.bilibili.com/video/BV13w411o7cu/?spm_id_from=333.1387.favlist.content.click&vd_source=1d8a232b177c2a5e28ac445019114cec
+
+知乎笔记
+
+https://www.zhihu.com/people/zhang-xiao-yu-45-67-74/search?keyword=CUDA-MODE&pathBefore=%2Fpeople%2Fzhang-xiao-yu-45-67-74%2Fposts
 
 
 谷歌浏览器 打开开发者模式  chrome://tracing 可以打开profile 的 json文件
