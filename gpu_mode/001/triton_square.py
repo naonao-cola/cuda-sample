@@ -7,7 +7,7 @@ import torch
 # import os
 # os.environ["TRITON_INTERPRET"] = "1"
 
-@triton.jit
+@triton.jit(interpret=True)
 def square_kernel(output_ptr, input_ptr, input_row_stride, output_row_stride, n_cols, BLOCK_SIZE: tl.constexpr):
     # The rows of the softmax are independent, so we parallelize across those
     row_idx = tl.program_id(0)

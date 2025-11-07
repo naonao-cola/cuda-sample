@@ -15,7 +15,12 @@
 
 ## torch profile
 
+github
 https://github.com/gpu-mode/lectures
+b站
+https://www.bilibili.com/video/BV1QZ421N7pT/?vd_source=1d8a232b177c2a5e28ac445019114cec
+youtube
+https://www.youtube.com/@GPUMODE/videos
 
 
 谷歌浏览器 打开开发者模式  chrome://tracing 可以打开profile 的 json文件
