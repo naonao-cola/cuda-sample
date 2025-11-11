@@ -1,8 +1,13 @@
 
 
 
+- [第二讲](#第二讲)
+- [第三讲](#第三讲)
+- [第四讲](#第四讲)
 - [第五讲](#第五讲)
   - [numba cuda 与 thread](#numba-cuda-与-thread)
+- [第六讲](#第六讲)
+- [第七讲](#第七讲)
 - [第八讲](#第八讲)
   - [合并访问](#合并访问)
   - [条件分支](#条件分支)
@@ -12,6 +17,7 @@
   - [分块](#分块)
 - [第九讲 归约](#第九讲-归约)
 - [第十讲](#第十讲)
+- [第十一讲](#第十一讲)
 
 ## torch profile
 
@@ -139,6 +145,17 @@ nvcc -dryrun vector_addition.cu
 
 ```
 
+# 第二讲
+
+https://zhuanlan.zhihu.com/p/707403304
+
+# 第三讲
+
+https://www.bilibili.com/video/BV1QZ421N7pT?spm_id_from=333.788.player.switch&vd_source=1d8a232b177c2a5e28ac445019114cec&p=3
+
+# 第四讲
+https://zhuanlan.zhihu.com/p/708682239
+
 # 第五讲
 ## numba cuda 与 thread
 
@@ -146,7 +163,18 @@ nvcc -dryrun vector_addition.cu
 
 设置环境变量 NUMBA_ENABLE_CUDASIM 可以进行调试，进入模拟器，模拟在GPU上运行，实际在cpu端运行， 可以核函数打断点。
 
+# 第六讲
+
+https://zhuanlan.zhihu.com/p/709594587
+
+# 第七讲
+
+https://zhuanlan.zhihu.com/p/711429727
+
 # 第八讲
+
+https://zhuanlan.zhihu.com/p/712926827
+
 
 ## 合并访问
 coalesce
@@ -175,11 +203,13 @@ tiling.cu
 
 # 第九讲 归约
 
+https://zhuanlan.zhihu.com/p/715380573
+
 torch_reductions.py   python 归约
 
 nondeterminism.py    浮点数左右相加 结果不同
 
-simple_reduce.cu    简单归约，线程分歧很高
+simple_reduce.cu     简单归约，线程分歧很高
 
 control_divergence_reduce.cu  归约
 
@@ -190,3 +220,10 @@ segment_reduce.cu    分块归约
 # 第十讲
 
 cudaMemcpyPeerAsync   不同 gpu之间复制
+
+
+
+
+# 第十一讲
+
+https://zhuanlan.zhihu.com/p/719033703
