@@ -18,6 +18,13 @@
 - [第九讲 归约](#第九讲-归约)
 - [第十讲](#第十讲)
 - [第十一讲](#第十一讲)
+- [第十二讲](#第十二讲)
+- [第十三讲](#第十三讲)
+- [第十四讲](#第十四讲)
+  - [比较重要](#比较重要)
+- [第十五讲](#第十五讲)
+- [第十六讲](#第十六讲)
+- [第十七讲](#第十七讲)
 
 ## torch profile
 
@@ -227,3 +234,70 @@ cudaMemcpyPeerAsync   不同 gpu之间复制
 # 第十一讲
 
 https://zhuanlan.zhihu.com/p/719033703
+
+
+# 第十二讲
+
+https://zhuanlan.zhihu.com/p/720359596   CUDA-MODE课程笔记 第12课，Flash Attention
+
+https://zhuanlan.zhihu.com/p/684557290   【BBuf的CUDA笔记】十五，OpenAI Triton入门笔记三 FusedAttention
+
+flash attention 即是 cuda的矩阵分块运算技术 tile分块,在共享内存上处理
+
+
+https://zhuanlan.zhihu.com/p/669926191    图解大模型计算加速系列：FlashAttention V1，从硬件到计算逻辑
+
+
+
+# 第十三讲
+
+https://zhuanlan.zhihu.com/p/855304890  CUDA-MODE 课程笔记 第13课：Ring Attention
+
+分块 softmax 计算
+
+这里介绍了一下"Ring Attention"的主要概念。内容包括：
+
+    计算顺序的灵活性：块计算的顺序可以是任意的，不受限制。
+
+    QKV序列的分割：将QKV（查询、键和值）序列分割成N个不同的主机进行处理。
+
+    主机环状结构：这些主机形成一个概念上的环，用于交换KV（键和值）段。
+
+    完成条件：当每个节点都看到所有KV部分时，一个完整的循环就完成了。
+
+    零开销：对于较长的序列，由于计算和通信可以重叠，因此实现了零开销。
+
+
+
+# 第十四讲
+
+
+https://zhuanlan.zhihu.com/p/2130588615  CUDA-MODE 课程笔记 第14课，Triton 实践指南
+
+
+与CUDA不同，如果我们设置环境变量 TRITON_INTERPRET = 1，我们可以像调试任何CPU程序一样调试Triton kernel。然后Triton在CPU上运行，但模拟它在GPU上运行。
+
+术语说明：在Triton术语中，每个处理块的kernel被称为“program”。也就是说，我们上面的例子运行了2个program。因此，“block_id”通常被称为“pid”（“program id”的缩写），但它们是相同的。
+
+
+## 比较重要
+
+swizzling，因为 Triton 提供了一个 triton.language.swizzle2d 函数
+
+
+https://zhuanlan.zhihu.com/p/4746910252   swizzling 详细解释
+
+
+# 第十五讲
+
+讲cutlass的cute Layout抽象的，感觉讲的比较差，建议大家直接看reed大佬的cutlass系列博客介绍，
+
+
+# 第十六讲
+
+On Hands profiling是一个关于PyTorch Lighting的工程师根据一个实际的gemma模型微调的程序来进行profile和改进性能的课程，这节课没有Slides更贴近AI Infra工程师的生活，profile工具使用了Nsight System和PyTorch Profiler
+
+
+
+
+# 第十七讲
